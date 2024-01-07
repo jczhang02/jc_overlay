@@ -30,7 +30,6 @@ DEPEND="
 	dev-qt/qtdbus
 	dev-util/cmake
 	wayland? (
-		dev-qt/qt-wayland
 		kde-plasma/kwayland
 	)
 "
