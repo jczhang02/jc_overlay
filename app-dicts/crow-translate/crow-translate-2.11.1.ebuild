@@ -28,7 +28,7 @@ DEPEND="
 	dev-qt/qtconcurrent
 	dev-qt/qtx11extras
 	dev-qt/qtdbus
-	dev-util/cmake
+	dev-build/cmake
 	wayland? (
 		kde-plasma/kwayland
 	)
