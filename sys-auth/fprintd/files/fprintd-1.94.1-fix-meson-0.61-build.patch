@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<title>fprintd-1.94.1-fix-meson-0.61-build.patch « files « fprintd « sys-auth - repo/gentoo.git - Official Gentoo ebuild repository</title>
+<meta name='generator' content='cgit v1.2.3'/>
+<meta name='robots' content='index,follow'/>
+<link rel='stylesheet' type='text/css' href='/cgit.css'/>
+<link rel='shortcut icon' href='//www.gentoo.org/favicon.ico'/>
+<link rel='alternate' title='Atom feed' href='https://gitweb.gentoo.org/repo/gentoo.git/atom/sys-auth/fprintd/files/fprintd-1.94.1-fix-meson-0.61-build.patch?h=master' type='application/atom+xml'/>
+<link rel='vcs-git' href='https://anongit.gentoo.org/git/repo/gentoo.git' title='repo/gentoo.git Git repository'/>
+<link rel='vcs-git' href='git+ssh://git@git.gentoo.org/repo/gentoo.git' title='repo/gentoo.git Git repository'/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#54487a">
+<meta name="description" content="Browse the Gentoo Git repositories">
+<link href="https://assets.gentoo.org/tyrian/v2/tyrian.min.css" rel="stylesheet" media="screen">
+</head>
+<body>
+<header>
+  <div class="site-title">
+    <div class="container">
+      <div class="row justify-content-between">
+        <div class="logo">
+          <a href="/" title="Back to the homepage" class="site-logo">
+            <img src="https://assets.gentoo.org/tyrian/v2/site-logo.png" alt="Gentoo" srcset="https://assets.gentoo.org/tyrian/v2/site-logo.svg">
+          </a>
+          <span class="site-label">GitWeb</span>
+        </div>
+        <div class="site-title-buttons">
+          <div class="btn-group btn-group-sm">
+            <a href="https://get.gentoo.org/" role="button" class="btn get-gentoo"><span class="fa fa-fw fa-download"></span>
+              <strong>Get Gentoo!</strong></a>
+            <div class="btn-group btn-group-sm">
+              <a class="btn gentoo-org-sites dropdown-toggle" data-toggle="dropdown" data-target="#" href="#">
+                <span class="fa fa-fw fa-map-o"></span> <span class="d-none d-sm-inline">gentoo.org sites</span>
+                <span class="caret"></span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="https://www.gentoo.org/" title="Main Gentoo website"><span class="fa fa-home fa-fw"></span>
+                  gentoo.org</a>
+                <a class="dropdown-item" href="https://wiki.gentoo.org/" title="Find and contribute documentation"><span class="fa fa-file-text-o fa-fw"></span>
+                  Wiki</a>
+                <a class="dropdown-item" href="https://bugs.gentoo.org/" title="Report issues and find common issues"><span class="fa fa-bug fa-fw"></span>
+                  Bugs</a>
+                <a class="dropdown-item" href="https://forums.gentoo.org/" title="Discuss with the community"><span class="fa fa-comments-o fa-fw"></span>
+                  Forums</a>
+                <a class="dropdown-item" href="https://packages.gentoo.org/" title="Find software for your Gentoo"><span class="fa fa-hdd-o fa-fw"></span>
+                  Packages</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="https://planet.gentoo.org/" title="Find out what's going on in the developer community"><span class="fa fa-rss fa-fw"></span>
+                  Planet</a>
+                <a class="dropdown-item" href="https://archives.gentoo.org/" title="Read up on past discussions"><span class="fa fa-archive fa-fw"></span>
+                  Archives</a>
+                <a class="dropdown-item" href="https://sources.gentoo.org/" title="Browse our source code"><span class="fa fa-code fa-fw"></span>
+                  Sources</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="https://infra-status.gentoo.org/" title="Get updates on the services provided by Gentoo"><span class="fa fa-server fa-fw"></span>
+                  Infra Status</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="tyrian-navbar navbar navbar-dark navbar-expand-lg bg-primary" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-main-collapse" aria-controls="navbar-main-collapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse navbar-main-collapse" id="navbar-main-collapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/repo/gentoo.git">Gentoo Repository</a></li>
+          <li class="nav-item"><a class="nav-link" href="/repo/">Repositories</a></li>
+          <li class="nav-item"><a class="nav-link" href="/proj/">Projects</a></li>
+          <li class="nav-item"><a class="nav-link" href="/dev/">Developer Overlays</a></li>
+          <li class="nav-item"><a class="nav-link" href="/user/">User Overlays</a></li>
+          <li class="nav-item"><a class="nav-link" href="/data/">Data</a></li>
+          <li class="nav-item"><a class="nav-link" href="/sites/">Websites</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="container pb-5">
+  <div class="row">
+  <div class="col-md-12">
+<div id='cgit'><table id='header'>
+<tr>
+<td class='logo' rowspan='2'><a href='/'><img src='/cgit.png' alt='cgit logo'/></a></td>
+<td class='main'><a href='/'>index</a> : <a title='repo/gentoo.git' href='/repo/gentoo.git/'>repo/gentoo.git</a></td><td class='form'><form method='get'>
+<select name='h' onchange='this.form.submit();'>
+<option value='master' selected='selected'>master</option>
+</select> <input type='submit' value='switch'/></form></td></tr>
+<tr><td class='sub'>Official Gentoo ebuild repository</td><td class='sub right'>Infrastructure team &lt;infrastructure@gentoo.org&gt;</td></tr></table>
+<table class='tabs'><tr><td>
+<a href='/repo/gentoo.git/'>summary</a><a href='/repo/gentoo.git/refs/'>refs</a><a href='/repo/gentoo.git/log/sys-auth/fprintd/files/fprintd-1.94.1-fix-meson-0.61-build.patch'>log</a><a class='active' href='/repo/gentoo.git/tree/sys-auth/fprintd/files/fprintd-1.94.1-fix-meson-0.61-build.patch'>tree</a><a href='/repo/gentoo.git/commit/sys-auth/fprintd/files/fprintd-1.94.1-fix-meson-0.61-build.patch'>commit</a><a href='/repo/gentoo.git/diff/sys-auth/fprintd/files/fprintd-1.94.1-fix-meson-0.61-build.patch'>diff</a></td><td class='form'><form class='right' method='get' action='/repo/gentoo.git/log/sys-auth/fprintd/files/fprintd-1.94.1-fix-meson-0.61-build.patch'>
+<select name='qt'>
+<option value='grep'>log msg</option>
+<option value='author'>author</option>
+<option value='committer'>committer</option>
+<option value='range'>range</option>
+</select>
+<input class='txt' type='search' size='10' name='q' value=''/>
+<input type='submit' value='search'/>
+</form>
+</td></tr></table>
+<div class='path'>path: <a href='/repo/gentoo.git/tree/'>root</a>/<a href='/repo/gentoo.git/tree/sys-auth'>sys-auth</a>/<a href='/repo/gentoo.git/tree/sys-auth/fprintd'>fprintd</a>/<a href='/repo/gentoo.git/tree/sys-auth/fprintd/files'>files</a>/<a href='/repo/gentoo.git/tree/sys-auth/fprintd/files/fprintd-1.94.1-fix-meson-0.61-build.patch'>fprintd-1.94.1-fix-meson-0.61-build.patch</a></div><div class='content'>blob: e7f78320d1b9d6a5141c1f205df27d4357f89051 (<a href='/repo/gentoo.git/plain/sys-auth/fprintd/files/fprintd-1.94.1-fix-meson-0.61-build.patch'>plain</a>)
+<table summary='blob content' class='blob'>
+<tr><td class='linenumbers'><pre><a id='n1' href='#n1'>1</a>
+<a id='n2' href='#n2'>2</a>
+<a id='n3' href='#n3'>3</a>
+<a id='n4' href='#n4'>4</a>
+<a id='n5' href='#n5'>5</a>
+<a id='n6' href='#n6'>6</a>
+<a id='n7' href='#n7'>7</a>
+<a id='n8' href='#n8'>8</a>
+<a id='n9' href='#n9'>9</a>
+<a id='n10' href='#n10'>10</a>
+<a id='n11' href='#n11'>11</a>
+<a id='n12' href='#n12'>12</a>
+<a id='n13' href='#n13'>13</a>
+<a id='n14' href='#n14'>14</a>
+<a id='n15' href='#n15'>15</a>
+<a id='n16' href='#n16'>16</a>
+<a id='n17' href='#n17'>17</a>
+<a id='n18' href='#n18'>18</a>
+<a id='n19' href='#n19'>19</a>
+<a id='n20' href='#n20'>20</a>
+<a id='n21' href='#n21'>21</a>
+<a id='n22' href='#n22'>22</a>
+<a id='n23' href='#n23'>23</a>
+<a id='n24' href='#n24'>24</a>
+<a id='n25' href='#n25'>25</a>
+<a id='n26' href='#n26'>26</a>
+<a id='n27' href='#n27'>27</a>
+<a id='n28' href='#n28'>28</a>
+<a id='n29' href='#n29'>29</a>
+<a id='n30' href='#n30'>30</a>
+<a id='n31' href='#n31'>31</a>
+<a id='n32' href='#n32'>32</a>
+<a id='n33' href='#n33'>33</a>
+<a id='n34' href='#n34'>34</a>
+<a id='n35' href='#n35'>35</a>
+<a id='n36' href='#n36'>36</a>
+<a id='n37' href='#n37'>37</a>
+<a id='n38' href='#n38'>38</a>
+<a id='n39' href='#n39'>39</a>
+<a id='n40' href='#n40'>40</a>
+<a id='n41' href='#n41'>41</a>
+<a id='n42' href='#n42'>42</a>
+<a id='n43' href='#n43'>43</a>
+<a id='n44' href='#n44'>44</a>
+<a id='n45' href='#n45'>45</a>
+<a id='n46' href='#n46'>46</a>
+<a id='n47' href='#n47'>47</a>
+<a id='n48' href='#n48'>48</a>
+<a id='n49' href='#n49'>49</a>
+<a id='n50' href='#n50'>50</a>
+<a id='n51' href='#n51'>51</a>
+<a id='n52' href='#n52'>52</a>
+<a id='n53' href='#n53'>53</a>
+<a id='n54' href='#n54'>54</a>
+<a id='n55' href='#n55'>55</a>
+<a id='n56' href='#n56'>56</a>
+<a id='n57' href='#n57'>57</a>
+<a id='n58' href='#n58'>58</a>
+<a id='n59' href='#n59'>59</a>
+<a id='n60' href='#n60'>60</a>
+<a id='n61' href='#n61'>61</a>
+<a id='n62' href='#n62'>62</a>
+<a id='n63' href='#n63'>63</a>
+<a id='n64' href='#n64'>64</a>
+<a id='n65' href='#n65'>65</a>
+<a id='n66' href='#n66'>66</a>
+<a id='n67' href='#n67'>67</a>
+<a id='n68' href='#n68'>68</a>
+<a id='n69' href='#n69'>69</a>
+<a id='n70' href='#n70'>70</a>
+<a id='n71' href='#n71'>71</a>
+<a id='n72' href='#n72'>72</a>
+<a id='n73' href='#n73'>73</a>
+<a id='n74' href='#n74'>74</a>
+<a id='n75' href='#n75'>75</a>
+<a id='n76' href='#n76'>76</a>
+<a id='n77' href='#n77'>77</a>
+<a id='n78' href='#n78'>78</a>
+<a id='n79' href='#n79'>79</a>
+<a id='n80' href='#n80'>80</a>
+<a id='n81' href='#n81'>81</a>
+<a id='n82' href='#n82'>82</a>
+<a id='n83' href='#n83'>83</a>
+<a id='n84' href='#n84'>84</a>
+<a id='n85' href='#n85'>85</a>
+<a id='n86' href='#n86'>86</a>
+<a id='n87' href='#n87'>87</a>
+<a id='n88' href='#n88'>88</a>
+<a id='n89' href='#n89'>89</a>
+<a id='n90' href='#n90'>90</a>
+<a id='n91' href='#n91'>91</a>
+<a id='n92' href='#n92'>92</a>
+<a id='n93' href='#n93'>93</a>
+<a id='n94' href='#n94'>94</a>
+<a id='n95' href='#n95'>95</a>
+<a id='n96' href='#n96'>96</a>
+<a id='n97' href='#n97'>97</a>
+<a id='n98' href='#n98'>98</a>
+<a id='n99' href='#n99'>99</a>
+<a id='n100' href='#n100'>100</a>
+<a id='n101' href='#n101'>101</a>
+<a id='n102' href='#n102'>102</a>
+<a id='n103' href='#n103'>103</a>
+<a id='n104' href='#n104'>104</a>
+<a id='n105' href='#n105'>105</a>
+<a id='n106' href='#n106'>106</a>
+<a id='n107' href='#n107'>107</a>
+<a id='n108' href='#n108'>108</a>
+<a id='n109' href='#n109'>109</a>
+<a id='n110' href='#n110'>110</a>
+<a id='n111' href='#n111'>111</a>
+<a id='n112' href='#n112'>112</a>
+<a id='n113' href='#n113'>113</a>
+<a id='n114' href='#n114'>114</a>
+<a id='n115' href='#n115'>115</a>
+<a id='n116' href='#n116'>116</a>
+<a id='n117' href='#n117'>117</a>
+<a id='n118' href='#n118'>118</a>
+<a id='n119' href='#n119'>119</a>
+<a id='n120' href='#n120'>120</a>
+<a id='n121' href='#n121'>121</a>
+</pre></td>
+<td class='lines'><pre><code><style>pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight .c { color: #888888 } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { color: #008800; font-weight: bold } /* Keyword */
+.highlight .ch { color: #888888 } /* Comment.Hashbang */
+.highlight .cm { color: #888888 } /* Comment.Multiline */
+.highlight .cp { color: #cc0000; font-weight: bold } /* Comment.Preproc */
+.highlight .cpf { color: #888888 } /* Comment.PreprocFile */
+.highlight .c1 { color: #888888 } /* Comment.Single */
+.highlight .cs { color: #cc0000; font-weight: bold; background-color: #fff0f0 } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #333333 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #666666 } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { color: #008800; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008800; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008800; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008800 } /* Keyword.Pseudo */
+.highlight .kr { color: #008800; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #888888; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #0000DD; font-weight: bold } /* Literal.Number */
+.highlight .s { color: #dd2200; background-color: #fff0f0 } /* Literal.String */
+.highlight .na { color: #336699 } /* Name.Attribute */
+.highlight .nb { color: #003388 } /* Name.Builtin */
+.highlight .nc { color: #bb0066; font-weight: bold } /* Name.Class */
+.highlight .no { color: #003366; font-weight: bold } /* Name.Constant */
+.highlight .nd { color: #555555 } /* Name.Decorator */
+.highlight .ne { color: #bb0066; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #0066bb; font-weight: bold } /* Name.Function */
+.highlight .nl { color: #336699; font-style: italic } /* Name.Label */
+.highlight .nn { color: #bb0066; font-weight: bold } /* Name.Namespace */
+.highlight .py { color: #336699; font-weight: bold } /* Name.Property */
+.highlight .nt { color: #bb0066; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #336699 } /* Name.Variable */
+.highlight .ow { color: #008800 } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mb { color: #0000DD; font-weight: bold } /* Literal.Number.Bin */
+.highlight .mf { color: #0000DD; font-weight: bold } /* Literal.Number.Float */
+.highlight .mh { color: #0000DD; font-weight: bold } /* Literal.Number.Hex */
+.highlight .mi { color: #0000DD; font-weight: bold } /* Literal.Number.Integer */
+.highlight .mo { color: #0000DD; font-weight: bold } /* Literal.Number.Oct */
+.highlight .sa { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Affix */
+.highlight .sb { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Backtick */
+.highlight .sc { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Char */
+.highlight .dl { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Delimiter */
+.highlight .sd { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Doc */
+.highlight .s2 { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Double */
+.highlight .se { color: #0044dd; background-color: #fff0f0 } /* Literal.String.Escape */
+.highlight .sh { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Heredoc */
+.highlight .si { color: #3333bb; background-color: #fff0f0 } /* Literal.String.Interpol */
+.highlight .sx { color: #22bb22; background-color: #f0fff0 } /* Literal.String.Other */
+.highlight .sr { color: #008800; background-color: #fff0ff } /* Literal.String.Regex */
+.highlight .s1 { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Single */
+.highlight .ss { color: #aa6600; background-color: #fff0f0 } /* Literal.String.Symbol */
+.highlight .bp { color: #003388 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0066bb; font-weight: bold } /* Name.Function.Magic */
+.highlight .vc { color: #336699 } /* Name.Variable.Class */
+.highlight .vg { color: #dd7700 } /* Name.Variable.Global */
+.highlight .vi { color: #3333bb } /* Name.Variable.Instance */
+.highlight .vm { color: #336699 } /* Name.Variable.Magic */
+.highlight .il { color: #0000DD; font-weight: bold } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span>https://gitlab.freedesktop.org/libfprint/fprintd/-/commit/f4256533d1ffdc203c3f8c6ee42e8dcde470a93f.patch
+https://gitlab.freedesktop.org/libfprint/fprintd/-/commit/2c34cef5ef2004d8479475db5523c572eb409a6b.patch
+https://bugs.gentoo.org/831753
+
+From f4256533d1ffdc203c3f8c6ee42e8dcde470a93f Mon Sep 17 00:00:00 2001
+From: Eli Schwartz &lt;eschwartz@archlinux.org&gt;
+Date: Tue, 11 Jan 2022 21:06:35 -0500
+Subject: [PATCH] use more idiomatic/correct embedded shell scripting
+
+Formatting arguments into code is fragile, and meson natively knows how
+to pass files as arguments via argv. So pass them as arguments to the
+shell.
+<span class="gs">---</span>
+<span class="w"> </span>doc/dbus/meson.build | 9 ++++-----
+<span class="w"> </span>1 file changed, 4 insertions(+), 5 deletions(-)
+
+<span class="gh">diff --git a/doc/dbus/meson.build b/doc/dbus/meson.build</span>
+<span class="gh">index 802938e..861da64 100644</span>
+<span class="gd">--- a/doc/dbus/meson.build</span>
+<span class="gi">+++ b/doc/dbus/meson.build</span>
+<span class="gu">@@ -19,11 +19,10 @@ foreach interface_file: dbus_interfaces_files</span>
+<span class="w"> </span>        capture: true,
+<span class="w"> </span>        command: [
+<span class="w"> </span>            bash, &#39;-c&#39;,
+<span class="gd">-            &#39;cat @INPUT@;&#39; +</span>
+<span class="gd">-            xsltproc.path() + &#39; @0@/@1@ &#39;.format(</span>
+<span class="gd">-                meson.source_root(),</span>
+<span class="gd">-                files(&#39;spec-to-docbook.xsl&#39;)[0]) +</span>
+<span class="gd">-            interface_file.full_path() + &#39;| tail -n +2;&#39;,</span>
+<span class="gi">+            &#39;cat &quot;$1&quot;; &quot;$2&quot; &quot;$3&quot; &quot;$4&quot; | tail -n +2&#39;,</span>
+<span class="gi">+            &#39;_&#39;, # argv0 ignored</span>
+<span class="gi">+            &#39;@INPUT@&#39;,</span>
+<span class="gi">+            xsltproc, files(&#39;spec-to-docbook.xsl&#39;)[0], interface_file</span>
+<span class="w"> </span>        ],
+<span class="w"> </span>    )
+<span class="w"> </span>endforeach
+<span class="gd">-- </span>
+GitLab
+
+From 2c34cef5ef2004d8479475db5523c572eb409a6b Mon Sep 17 00:00:00 2001
+From: Eli Schwartz &lt;eschwartz@archlinux.org&gt;
+Date: Tue, 11 Jan 2022 20:46:29 -0500
+Subject: [PATCH] remove pointless copying of files into build directory
+
+I&#39;m not entirely sure what this did, but it seems to be obsoleted by
+commit 93bad825406d13ed5eb2cf27541dc58194bef8f3.
+<span class="gs">---</span>
+<span class="w"> </span>doc/dbus/meson.build                          |  6 +++---
+<span class="w"> </span>src/meson.build                               | 20 ++++++-------------
+<span class="w"> </span>....xml =&gt; net.reactivated.Fprint.Device.xml} |  0
+<span class="w"> </span>...xml =&gt; net.reactivated.Fprint.Manager.xml} |  0
+<span class="w"> </span>4 files changed, 9 insertions(+), 17 deletions(-)
+<span class="w"> </span>rename src/{device.xml =&gt; net.reactivated.Fprint.Device.xml} (100%)
+<span class="w"> </span>rename src/{manager.xml =&gt; net.reactivated.Fprint.Manager.xml} (100%)
+
+<span class="gh">diff --git a/doc/dbus/meson.build b/doc/dbus/meson.build</span>
+<span class="gh">index 861da64..431127d 100644</span>
+<span class="gd">--- a/doc/dbus/meson.build</span>
+<span class="gi">+++ b/doc/dbus/meson.build</span>
+<span class="gu">@@ -9,13 +9,13 @@ docbook_xml_header = custom_target(&#39;docbook_xml_header&#39;,</span>
+<span class="w"> </span>)
+<span class="w"> </span>
+<span class="w"> </span>dbus_interfaces_refs = []
+<span class="gd">-foreach interface_file: dbus_interfaces_files</span>
+<span class="gd">-    basename = run_command(&#39;basename&#39;, interface_file.full_path(), &#39;.xml&#39;).stdout().strip()</span>
+<span class="gi">+foreach interface_file: dbus_interfaces</span>
+<span class="gi">+    basename = run_command(&#39;basename&#39;, interface_file, &#39;.xml&#39;).stdout().strip()</span>
+<span class="w"> </span>    dbus_interfaces_refs += custom_target(basename + &#39;_ref&#39;,
+<span class="w"> </span>        input: docbook_xml_header,
+<span class="w"> </span>        output: basename + &#39;.ref.xml&#39;,
+<span class="w"> </span>        build_by_default: true,
+<span class="gd">-        depends: interface_file,</span>
+<span class="gi">+        depend_files: interface_file,</span>
+<span class="w"> </span>        capture: true,
+<span class="w"> </span>        command: [
+<span class="w"> </span>            bash, &#39;-c&#39;,
+<span class="gh">diff --git a/src/meson.build b/src/meson.build</span>
+<span class="gh">index 1df6216..a7ce3fe 100644</span>
+<span class="gd">--- a/src/meson.build</span>
+<span class="gi">+++ b/src/meson.build</span>
+<span class="gu">@@ -1,22 +1,14 @@</span>
+<span class="w"> </span>bash = find_program(&#39;bash&#39;)
+<span class="gd">-dbus_interfaces = [&#39;Manager&#39;, &#39;Device&#39;]</span>
+<span class="gd">-dbus_interfaces_files = []</span>
+<span class="gi">+dbus_interfaces = files(</span>
+<span class="gi">+    &#39;net.reactivated.Fprint.Manager.xml&#39;,</span>
+<span class="gi">+    &#39;net.reactivated.Fprint.Device.xml&#39;,</span>
+<span class="gi">+)</span>
+<span class="w"> </span>
+<span class="gd">-foreach interface_name: dbus_interfaces</span>
+<span class="gd">-    interface = interface_name.to_lower()</span>
+<span class="gd">-    interface_file = interface + &#39;.xml&#39;</span>
+<span class="gd">-    dbus_interfaces_files += custom_target(&#39;dbus_interface_&#39; + interface,</span>
+<span class="gd">-        input: interface_file,</span>
+<span class="gd">-        output: &#39;net.reactivated.Fprint.@0@.xml&#39;.format(interface_name),</span>
+<span class="gd">-        command: [&#39;cp&#39;, &#39;@INPUT@&#39;, &#39;@OUTPUT@&#39;],</span>
+<span class="gd">-        install: true,</span>
+<span class="gd">-        install_dir: dbus_interfaces_dir,</span>
+<span class="gd">-    )</span>
+<span class="gd">-endforeach</span>
+<span class="gi">+install_data(dbus_interfaces, install_dir: dbus_interfaces_dir)</span>
+<span class="w"> </span>
+<span class="w"> </span># NOTE: We should pass &quot;--glib-min-required 2.64&quot; but cannot
+<span class="w"> </span>fprintd_dbus_sources_base = gnome.gdbus_codegen(&#39;fprintd-dbus&#39;,
+<span class="gd">-    sources: dbus_interfaces_files,</span>
+<span class="gi">+    sources: dbus_interfaces,</span>
+<span class="w"> </span>    autocleanup: &#39;all&#39;,
+<span class="w"> </span>    interface_prefix: &#39;net.reactivated.Fprint.&#39;,
+<span class="w"> </span>    namespace: &#39;FprintDBus&#39;,
+<span class="gh">diff --git a/src/device.xml b/src/net.reactivated.Fprint.Device.xml</span>
+similarity index 100%
+rename from src/device.xml
+rename to src/net.reactivated.Fprint.Device.xml
+<span class="gh">diff --git a/src/manager.xml b/src/net.reactivated.Fprint.Manager.xml</span>
+similarity index 100%
+rename from src/manager.xml
+rename to src/net.reactivated.Fprint.Manager.xml
+<span class="gd">-- </span>
+GitLab
+</pre></div>
+</code></pre></td></tr></table>
+</div> <!-- class=content -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 offset-md-2 col-md-7">
+            &nbsp;
+          </div>
+          <div class="col-12 col-md-3">
+            <h3 class="footerhead">Questions or comments?</h3>
+            Please feel free to <a href="https://www.gentoo.org/inside-gentoo/contact/">contact us</a>.
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-2 col-sm-3 col-md-2">
+            <ul class="footerlinks three-icons">
+              <li><a href="https://twitter.com/gentoo" title="@Gentoo on Twitter"><span class="fa fa-twitter fa-fw"></span></a></li>
+              <li><a href="https://www.facebook.com/gentoo.org" title="Gentoo on Facebook"><span class="fa fa-facebook fa-fw"></span></a></li>
+              <li></li>
+            </ul>
+          </div>
+          <div class="col-10 col-sm-9 col-md-10">
+            <strong>&copy; 2001&ndash;2022 Gentoo Foundation, Inc.</strong><br>
+            <small>
+              Gentoo is a trademark of the Gentoo Foundation, Inc.
+              The contents of this document, unless otherwise expressly stated, are licensed under the
+              <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC-BY-SA-4.0</a> license.
+              The <a href="https://www.gentoo.org/inside-gentoo/foundation/name-logo-guidelines.html">Gentoo Name and Logo Usage Guidelines</a> apply.
+            </small>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://assets.gentoo.org/tyrian/v2/jquery-3.3.slim.js"></script>
+    <script src="https://assets.gentoo.org/tyrian/v2/popper.min.js"></script>
+    <script src="https://assets.gentoo.org/tyrian/v2/bootstrap.min.js"></script>
+</div> <!-- id=cgit -->
+</body>
+</html>
