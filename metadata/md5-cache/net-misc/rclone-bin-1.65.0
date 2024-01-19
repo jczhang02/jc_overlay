@@ -1,0 +1,11 @@
+DEFINED_PHASES=install unpack
+DESCRIPTION=rsync for cloud storage
+EAPI=8
+HOMEPAGE=https://rclone.org/ https://github.com/ncw/rclone
+KEYWORDS=-*
+LICENSE=MIT
+RDEPEND=!!net-misc/rclone
+RESTRICT=mirror
+SLOT=0
+SRC_URI=https://beta.rclone.org/branch/fix-completion/v1.65.0-beta.7527.5c9cfbbc8.fix-completion/rclone-v1.65.0-beta.7527.5c9cfbbc8.fix-completion-linux-amd64.zip -> rclone-bin-1.65.0.zip
+_md5_=67135d6ec3043b71238190c35d359bb2
