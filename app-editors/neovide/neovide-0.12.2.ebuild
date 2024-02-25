@@ -429,14 +429,6 @@ RDEPEND="${DEPEND}"
 S=${WORKDIR}/${P}
 
 
-src_configure() {
-	local myfeatures=()
-	cargo_src_configure --no-default-features
-}
-
-src_compile() {
-	cargo_src_compile
-}
 
 src_install() {
 	cargo_src_install
