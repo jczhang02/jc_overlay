@@ -428,14 +428,6 @@ RDEPEND="${DEPEND}"
 
 S=${WORKDIR}/${P}
 
-src_unpack() {
-	if [[ "${PV}" == *9999* ]]; then
-		git-r3_src_unpack
-		cargo_live_src_unpack
-	else
-		unpack
-	fi
-}
 
 src_configure() {
 	local myfeatures=()
