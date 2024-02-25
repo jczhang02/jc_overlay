@@ -427,14 +427,3 @@ DEPEND="
 RDEPEND="${DEPEND}"
 
 S=${WORKDIR}/${P}
-
-
-
-src_install() {
-	cargo_src_install
-
-	domenu assets/neovide.desktop
-	doicon assets/neovide.svg
-
-}
-
