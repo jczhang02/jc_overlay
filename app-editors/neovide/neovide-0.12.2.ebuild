@@ -433,7 +433,7 @@ src_unpack() {
 		git-r3_src_unpack
 		cargo_live_src_unpack
 	else
-		cargo_src_unpack
+		unpack
 	fi
 }
 
