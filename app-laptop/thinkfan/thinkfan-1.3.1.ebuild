@@ -47,6 +47,3 @@ src_install() {
 	cmake_src_install
 	readme.gentoo_create_doc
 }
-
-
-
