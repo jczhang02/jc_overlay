@@ -18,11 +18,11 @@ S="${WORKDIR}/${PN}-${COMMIT}"
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="amd64 x86"
-IUSE="atasmart nvidia +yaml +lmsensors"
+IUSE="atasmart nvidia +yaml +lm-sensors"
 
 DEPEND="atasmart? ( dev-libs/libatasmart )
 	yaml? ( dev-cpp/yaml-cpp )
-	lmsensors? ( sys-apps/lm-sensors )"
+	lm-sensors? ( sys-apps/lm-sensors )"
 
 RDEPEND="${DEPEND}
 	nvidia? ( x11-drivers/nvidia-drivers )"
@@ -36,7 +36,7 @@ src_configure() {
 	local mycmakeargs=(
 		-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/${PF}
 		-DUSE_NVML="$(usex nvidia)"
-		-DUSE_LM_SENSORS=$(usex lmsensors)
+		-DUSE_LM_SENSORS=$(usex lm-sensors)
 		-DUSE_ATASMART="$(usex atasmart)"
 		-DUSE_YAML="$(usex yaml)"
 	)
