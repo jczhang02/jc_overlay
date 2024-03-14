@@ -1,0 +1,9 @@
+DEFINED_PHASES=install postinst
+DESCRIPTION=aliyunpan cli client, support Webdav service, JavaScript plugin
+EAPI=8
+HOMEPAGE=https://github.com/tickstep/aliyunpan
+KEYWORDS=-* ~amd64
+LICENSE=Apache-2.0
+SLOT=0
+SRC_URI=https://github.com/tickstep/aliyunpan/files/14493944/aliyunpan-v0.3.0-Beta1-linux-amd64.zip
+_md5_=8a982a9eee7d0e36a0474c3500e6a4af
