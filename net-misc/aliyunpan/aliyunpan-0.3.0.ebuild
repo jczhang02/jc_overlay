@@ -3,21 +3,26 @@
 
 EAPI=8
 
+inherit go-module
+
 HOMEPAGE="https://github.com/tickstep/aliyunpan"
 DESCRIPTION="aliyunpan cli client, support Webdav service, JavaScript plugin"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="-* ~amd64"
-SRC_URI="https://github.com/tickstep/aliyunpan/files/14493944/aliyunpan-v0.3.0-Beta1-linux-amd64.zip"
-S="${WORKDIR}/aliyunpan-v0.3.0-Beta1-linux-amd64"
+KEYWORDS="-* ~amd64 ~arm ~arm64 ~mips ~ppc64 ~s390 ~x86"
+SRC_URI="https://github.com/tickstep/aliyunpan/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz
+		 https://github.com/jczhang02/gentoo-deps/releases/download/aliyunpan-0.3.0/aliyunpan-0.3.0-deps.tar.xz"
+
+src_compile() {
+	ego build -o bin/${PN} -trimpath
+}
 
 src_install() {
-	dobin ${PN}
+	dobin bin/${PN}
 }
 
 pkg_postinst() {
 	elog "if you see \"FATAL ERROR: config file error: config file permission denied\""
 	elog "try \"mkdir ~/.aliyunpan\""
-	elog "from version 0.3.0, you need login via web api"
 }
