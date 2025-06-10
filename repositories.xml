@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<repositories version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name>my-overlay</name>
+      <description lang="en">Chengrui Zhang's Custom Gentoo Overlay.</description>
+        <homepage>https://github.com/jczhang02/jc_overlay</homepage>
+        <owner type="person">
+            <name>Chengrui Zhang</name>
+            <email>jczhang@live.it</email>
+        </owner>
+        <source type="git">git://github.com/jczhang02/jc_overlay.git</source>
+        <feed>https://github.com/jczhang02/jc_overlay/commits/main.atom</feed>
+  </repo>
+</repositories>
