@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>jc@gentoo.local</email>
+		<name>JC</name>
+	</maintainer>
+	<upstream>
+		<remote-id type="github">openchamber/openchamber</remote-id>
+		<bugs-to>https://github.com/openchamber/openchamber/issues</bugs-to>
+	</upstream>
+	<longdescription lang="en">
+		OpenChamber is a web/PWA interface for the OpenCode AI coding agent.
+		It provides branchable chat sessions, multi-agent run management,
+		git workflow integration, Cloudflare tunnel support, and a modern
+		web-based terminal experience.
+	</longdescription>
+</pkgmetadata>

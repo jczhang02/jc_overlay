@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenChamber - Web interface for OpenCode AI coding agent
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/openchamber serve
+ExecStop=/usr/bin/openchamber stop
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=default.target
