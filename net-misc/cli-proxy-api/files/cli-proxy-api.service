@@ -1,0 +1,13 @@
+[Unit]
+Description=CLI Proxy API Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cli-proxy-api --config %h/.cli-proxy-api/config.yaml
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

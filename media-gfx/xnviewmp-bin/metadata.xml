@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>jc@example.com</email>
+	</maintainer>
+	<longdescription lang="en">
+		XnView MP is a versatile and powerful photo viewer, image management,
+		and image resizer. Supports more than 500 image formats including
+		JPEG, TIFF, PNG, GIF, WEBP, PSD, JPEG2000, OpenEXR, camera RAW,
+		HEIC, PDF, DNG, CR2. Free for private and educational use.
+	</longdescription>
+	<upstream>
+		<remote-id type="cpe">cpe:/a:xnview:xnview</remote-id>
+		<bugs-to>https://newsgroup.xnview.com/viewforum.php?f=93</bugs-to>
+	</upstream>
+</pkgmetadata>

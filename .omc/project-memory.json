@@ -1,0 +1,147 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1775704214141,
+  "projectRoot": "/home/jc/dev/jc_overlay",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "app-laptop": {
+      "path": "app-laptop",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1775704214138,
+      "keyFiles": []
+    },
+    "dev-util": {
+      "path": "dev-util",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1775704214139,
+      "keyFiles": []
+    },
+    "licenses": {
+      "path": "licenses",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1775704214139,
+      "keyFiles": [
+        "todesk"
+      ]
+    },
+    "mail-client": {
+      "path": "mail-client",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1775704214139,
+      "keyFiles": []
+    },
+    "media-fonts": {
+      "path": "media-fonts",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1775704214140,
+      "keyFiles": []
+    },
+    "media-gfx": {
+      "path": "media-gfx",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1775704214140,
+      "keyFiles": []
+    },
+    "metadata": {
+      "path": "metadata",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1775704214140,
+      "keyFiles": [
+        "layout.conf",
+        "pkgcheck.conf"
+      ]
+    },
+    "net-misc": {
+      "path": "net-misc",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1775704214140,
+      "keyFiles": []
+    },
+    "profiles": {
+      "path": "profiles",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1775704214140,
+      "keyFiles": [
+        "eapi",
+        "repo_name"
+      ]
+    },
+    "sys-auth": {
+      "path": "sys-auth",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1775704214140,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "net-misc/todesk",
+      "accessCount": 1,
+      "lastAccessed": 1775704268977,
+      "type": "directory"
+    },
+    {
+      "path": "net-misc/todesk/files/todeskd.initd",
+      "accessCount": 1,
+      "lastAccessed": 1775706461734,
+      "type": "file"
+    },
+    {
+      "path": "net-misc/todesk/files/todeskd-keep.service",
+      "accessCount": 1,
+      "lastAccessed": 1775706461943,
+      "type": "file"
+    },
+    {
+      "path": "net-misc/todesk/files/todeskd-alone-4.3.0.0.initd",
+      "accessCount": 1,
+      "lastAccessed": 1775706620923,
+      "type": "file"
+    },
+    {
+      "path": "net-misc/todesk/files/todeskd-4.3.0.0.initd",
+      "accessCount": 1,
+      "lastAccessed": 1775706620958,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

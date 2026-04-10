@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<maintainer type="person">
+<email>jc@gentoo.local</email>
+<name>JC</name>
+</maintainer>
+<upstream>
+<remote-id type="github">anthropics/claude-code</remote-id>
+<bugs-to>https://github.com/anthropics/claude-code/issues</bugs-to>
+</upstream>
+<longdescription lang="en">
+Claude Code is Anthropic's official CLI tool that brings Claude AI
+directly to your terminal. It can understand your codebase, edit files,
+run terminal commands, search the web, and handle entire development
+workflows autonomously.
+</longdescription>
+</pkgmetadata>
