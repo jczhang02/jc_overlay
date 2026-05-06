@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		DBX is an open-source database management desktop and web application
+		built with Tauri 2 and Vue 3. Bundles drivers for 25+ databases
+		(MySQL, PostgreSQL, SQLite, Redis, MongoDB, MSSQL, Oracle, DuckDB, …)
+		in a single 15 MB binary, with built-in AI assistant.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">t8y2/dbx</remote-id>
+	</upstream>
+</pkgmetadata>

@@ -6,3 +6,4 @@ metadata/timestamp.chk
 profiles/use.local.desc
 *.swp
 *.swo
+.omc/
