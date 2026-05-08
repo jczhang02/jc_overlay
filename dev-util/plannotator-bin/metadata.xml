@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		plannotator is a browser-driven AI agent that reviews PRs and
+		annotates plan documents. Distributed upstream as a single
+		bun --compile binary; this ebuild fetches the linux-x64 release
+		artifact and installs it under /usr/bin.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">backnotprop/plannotator</remote-id>
+	</upstream>
+</pkgmetadata>
