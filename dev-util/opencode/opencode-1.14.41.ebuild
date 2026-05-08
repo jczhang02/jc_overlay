@@ -77,6 +77,12 @@ src_compile() {
 	# Vendored bun goes first so opencode's packageManager check passes.
 	export PATH="${T}/bun:${PATH}"
 
+	# packages/script/src/index.ts derives CHANNEL via `git branch
+	# --show-current` when OPENCODE_CHANNEL is unset. The release
+	# tarball has no .git tree, so pin both channel and version.
+	export OPENCODE_CHANNEL="latest"
+	export OPENCODE_VERSION="${PV}"
+
 	einfo "Using bun $(bun --version) from ${T}/bun"
 
 	einfo "Installing workspace dependencies (bun)"

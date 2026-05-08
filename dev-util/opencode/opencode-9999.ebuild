@@ -74,6 +74,12 @@ src_compile() {
 
 	export PATH="${T}/bun:${PATH}"
 
+	# packages/script/src/index.ts derives CHANNEL via `git branch
+	# --show-current` when OPENCODE_CHANNEL is unset. git-r3 leaves a
+	# usable .git tree, but pin explicitly so the build is reproducible
+	# regardless of upstream branch naming.
+	export OPENCODE_CHANNEL="dev"
+
 	einfo "Using bun $(bun --version) from ${T}/bun"
 
 	einfo "Installing workspace dependencies (bun)"
