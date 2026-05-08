@@ -3,29 +3,67 @@
 
 EAPI=8
 
+# opencode pins its bun toolchain via packageManager in root package.json.
+# Verify after each version bump that this matches root package.json's
+# packageManager field; bumping opencode without bumping BUN_PV will fail
+# the script/index.ts version-range check.
+BUN_PV="1.3.13"
+
 DESCRIPTION="AI coding agent built for the terminal"
 HOMEPAGE="https://opencode.ai https://github.com/sst/opencode"
-SRC_URI="https://github.com/sst/opencode/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
+BUN_BASE="https://github.com/oven-sh/bun/releases/download/bun-v${BUN_PV}"
+SRC_URI="
+	https://github.com/sst/opencode/archive/refs/tags/v${PV}.tar.gz
+		-> ${P}.tar.gz
+	amd64? (
+		${BUN_BASE}/bun-linux-x64.zip
+			-> bun-${BUN_PV}-linux-x64.zip
+	)
+	arm64? (
+		${BUN_BASE}/bun-linux-aarch64.zip
+			-> bun-${BUN_PV}-linux-aarch64.zip
+	)
+"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64"
 
-# bun install + bun build pull from npm/jsr at compile time.
+# bun install pulls from npm/jsr at compile time; bun --compile output
+# embeds a bunfs section that portage strip would corrupt.
 RESTRICT="network-sandbox mirror test strip"
 
-# Bun-compiled single-file binary embeds its own runtime; only libc is
-# required at runtime, satisfied by virtual/libc on any Gentoo system.
-
 BDEPEND="
-	net-libs/bun-bin
+	app-arch/unzip
 	app-arch/zip
 	app-arch/tar
 "
 
-# bun-compile produces a stripped, embedded binary; portage strip would
-# damage the bunfs section, hence RESTRICT=strip + QA_PREBUILT mask.
 QA_PREBUILT="usr/bin/opencode"
+
+src_unpack() {
+	# Unpack only the opencode tarball; the bun zip is staged manually
+	# under ${T}/bun so it doesn't pollute ${S}.
+	unpack "${P}.tar.gz"
+
+	local bun_zip
+	case ${ARCH} in
+		amd64) bun_zip="bun-${BUN_PV}-linux-x64.zip" ;;
+		arm64) bun_zip="bun-${BUN_PV}-linux-aarch64.zip" ;;
+		*) die "unsupported ARCH=${ARCH}" ;;
+	esac
+
+	mkdir -p "${T}/bun" || die
+	pushd "${T}/bun" > /dev/null || die
+	unzip -q "${DISTDIR}/${bun_zip}" || die "bun zip extract failed"
+	# zip layout: bun-linux-{x64,aarch64}/bun
+	local extracted
+	extracted=$(find . -maxdepth 2 -name bun -type f -executable | head -n1)
+	[[ -n ${extracted} ]] || die "bun binary not found inside zip"
+	mv "${extracted}" bun || die
+	chmod +x bun || die
+	popd > /dev/null
+}
 
 src_compile() {
 	# Sandbox all caches under ${T}.
@@ -35,6 +73,11 @@ src_compile() {
 	export npm_config_cache="${T}/npm-cache"
 	mkdir -p "${HOME}" "${XDG_CACHE_HOME}" "${BUN_INSTALL_CACHE_DIR}" \
 		"${npm_config_cache}" || die
+
+	# Vendored bun goes first so opencode's packageManager check passes.
+	export PATH="${T}/bun:${PATH}"
+
+	einfo "Using bun $(bun --version) from ${T}/bun"
 
 	einfo "Installing workspace dependencies (bun)"
 	bun install --frozen-lockfile \

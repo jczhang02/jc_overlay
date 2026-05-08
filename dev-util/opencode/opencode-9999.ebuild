@@ -15,27 +15,20 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS=""
 
-# bun install + bun build pull from npm/jsr at compile time.
+# bun install + bun build + dynamic bun toolchain fetch all need network.
 RESTRICT="network-sandbox mirror test strip"
 
-# Bun-compiled single-file binary embeds its own runtime; only libc is
-# required at runtime, satisfied by virtual/libc on any Gentoo system.
-
 BDEPEND="
-	net-libs/bun-bin
+	app-arch/unzip
 	app-arch/zip
 	app-arch/tar
+	net-misc/curl
 "
 
-# bun-compile produces a stripped, embedded binary; portage strip would
-# damage the bunfs section, hence RESTRICT=strip + QA_PREBUILT mask.
 QA_PREBUILT="usr/bin/opencode"
 
 src_unpack() {
 	git-r3_src_unpack
-
-	# Pull required submodules (tree-sitter grammars, etc.) if upstream
-	# uses them. Safe no-op when none are declared.
 	cd "${S}" || die
 	if [[ -f .gitmodules ]]; then
 		git submodule update --init --recursive --depth 1 \
@@ -44,13 +37,44 @@ src_unpack() {
 }
 
 src_compile() {
-	# Sandbox all caches under ${T}.
 	export BUN_INSTALL_CACHE_DIR="${T}/bun-cache"
 	export HOME="${T}/home"
 	export XDG_CACHE_HOME="${T}/cache"
 	export npm_config_cache="${T}/npm-cache"
 	mkdir -p "${HOME}" "${XDG_CACHE_HOME}" "${BUN_INSTALL_CACHE_DIR}" \
-		"${npm_config_cache}" || die
+		"${npm_config_cache}" "${T}/bun" || die
+
+	# opencode pins bun via packageManager in root package.json. Read it
+	# back so the live build always matches whatever upstream ships.
+	local bun_pv
+	bun_pv=$(sed -n 's/.*"packageManager"[[:space:]]*:[[:space:]]*"bun@\([0-9.]*\)".*/\1/p' \
+		"${S}/package.json")
+	[[ -n ${bun_pv} ]] || die "could not read packageManager bun version from package.json"
+	einfo "Upstream pins bun@${bun_pv}"
+
+	local bun_zip_name bun_inner_dir
+	case ${ARCH} in
+		amd64) bun_zip_name="bun-linux-x64.zip"; bun_inner_dir="bun-linux-x64" ;;
+		arm64) bun_zip_name="bun-linux-aarch64.zip"; bun_inner_dir="bun-linux-aarch64" ;;
+		*) die "unsupported ARCH=${ARCH}" ;;
+	esac
+
+	einfo "Fetching bun ${bun_pv} (${bun_zip_name})"
+	curl -fSL --retry 3 \
+		-o "${T}/${bun_zip_name}" \
+		"https://github.com/oven-sh/bun/releases/download/bun-v${bun_pv}/${bun_zip_name}" \
+		|| die "bun download failed"
+
+	pushd "${T}/bun" > /dev/null || die
+	unzip -q "${T}/${bun_zip_name}" || die "bun zip extract failed"
+	mv "${bun_inner_dir}/bun" bun || die "bun binary missing in zip"
+	chmod +x bun || die
+	rm -rf "${bun_inner_dir}"
+	popd > /dev/null
+
+	export PATH="${T}/bun:${PATH}"
+
+	einfo "Using bun $(bun --version) from ${T}/bun"
 
 	einfo "Installing workspace dependencies (bun)"
 	bun install --frozen-lockfile \
@@ -58,8 +82,6 @@ src_compile() {
 		|| die "bun install failed"
 
 	einfo "Building opencode binary for current host (bun --compile, --single)"
-	# --single restricts build to host os/arch; baseline/musl variants skipped.
-	# --skip-install: deps already installed at workspace root above.
 	bun run --cwd packages/opencode build --single --skip-install \
 		|| die "opencode build failed"
 }
@@ -80,7 +102,6 @@ src_install() {
 	exeinto /usr/bin
 	doexe "${bin}"
 
-	# Ship docs if present at repo root.
 	local d
 	for d in README.md LICENSE CHANGELOG.md; do
 		[[ -f ${d} ]] && dodoc "${d}"
