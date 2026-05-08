@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		opencode is an AI-powered coding agent for the terminal. The 9999
+		ebuild tracks the upstream sst/opencode dev branch and builds the
+		single-file binary from source via bun --compile.
+
+		Experimental multi-workspace support is opt-in via the
+		OPENCODE_EXPERIMENTAL_WORKSPACES=true environment variable.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">sst/opencode</remote-id>
+	</upstream>
+</pkgmetadata>
