@@ -7,7 +7,7 @@ EAPI=8
 # Verify after each version bump that this matches root package.json's
 # packageManager field; bumping opencode without bumping BUN_PV will fail
 # the script/index.ts version-range check.
-BUN_PV="1.3.13"
+BUN_PV="1.3.14"
 
 DESCRIPTION="AI coding agent built for the terminal"
 HOMEPAGE="https://opencode.ai https://github.com/sst/opencode"
@@ -40,6 +40,13 @@ BDEPEND="
 "
 
 QA_PREBUILT="usr/bin/opencode"
+
+# Backport of anomalyco/opencode PR #25886 — retry OpenAI overload stream
+# errors (server_is_overloaded / service_unavailable_error) instead of
+# terminating the turn with a final "OpenAI Responses stream error".
+PATCHES=(
+	"${FILESDIR}/${PN}-1.15.11-retry-overload-25886.patch"
+)
 
 src_unpack() {
 	# Unpack only the opencode tarball; the bun zip is staged manually
@@ -122,9 +129,36 @@ src_install() {
 pkg_postinst() {
 	elog "opencode ${PV} installed as /usr/bin/opencode."
 	elog
-	elog "Experimental multi-workspace mode is gated by an env flag:"
-	elog "  export OPENCODE_EXPERIMENTAL_WORKSPACES=true"
-	elog "Set it before launching opencode to enable Flag.OPENCODE_EXPERIMENTAL_WORKSPACES"
-	elog "(referenced from src/sync, src/session, src/control-plane/workspace,"
-	elog "and the TUI prompt/session-list dialogs)."
+	elog "Experimental flags (all gated by enabledByExperimental — either"
+	elog "the global OPENCODE_EXPERIMENTAL=true flips them all on, or the"
+	elog "specific OPENCODE_EXPERIMENTAL_<NAME>=true flips just one):"
+	elog
+	elog "  OPENCODE_EXPERIMENTAL_WORKSPACES         multi-workspace mode"
+	elog "  OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS  background subagent tasks"
+	elog "  OPENCODE_EXPERIMENTAL_NATIVE_LLM         native OpenAI/Anthropic runtime path"
+	elog "  OPENCODE_EXPERIMENTAL_PLAN_MODE          plan mode"
+	elog "  OPENCODE_EXPERIMENTAL_EVENT_SYSTEM       new event system"
+	elog "  OPENCODE_EXPERIMENTAL_SCOUT              scout agent"
+	elog "  OPENCODE_EXPERIMENTAL_LSP_TOOL           LSP tool"
+	elog "  OPENCODE_EXPERIMENTAL_OXFMT              oxfmt formatter"
+	elog "  OPENCODE_EXPERIMENTAL_ICON_DISCOVERY     icon discovery"
+	elog
+	elog "Workspace mode is referenced from src/sync, src/session,"
+	elog "src/control-plane/workspace, and the TUI prompt/session-list dialogs."
+	elog "Full flag list: packages/opencode/src/effect/runtime-flags.ts"
+	elog
+	elog "New interactive run flags:"
+	elog "  opencode run --replay [--replay-limit N]   replay recent history on resume"
+	elog "  opencode run --shell                       shell mode in run prompt (1.15.6+)"
+	elog
+	elog "Since 1.15.5:"
+	elog "  1.15.6  TUI diff viewer (file tree), Anthropic native runtime, V2 API error schema"
+	elog "  1.15.7  Grok OAuth + device-code login, PDF attachments for Grok"
+	elog "  1.15.9  Diff viewer redesign (default-on), MCP OAuth scopes/callbackPort,"
+	elog "          Vertex Anthropic multi-region endpoint fix"
+	elog "  1.15.10 Restored legacy desktop project/session flows"
+	elog "  1.15.11 OpenAI headerTimeout opt-in, plugin dispose hook, restored remote project identity"
+	elog
+	elog "NOTE: OpenAI overload stream-retry fix (PR #25886) still NOT upstream"
+	elog "as of 1.15.11 — applied here via local backport patch."
 }
