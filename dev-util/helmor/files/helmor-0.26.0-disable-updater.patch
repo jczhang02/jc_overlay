@@ -1,0 +1,18 @@
+Disable Tauri updater artifact creation for ebuild builds.
+
+The upstream tauri.conf.json sets `createUpdaterArtifacts: true`, which
+requires TAURI_SIGNING_PRIVATE_KEY at build time. Portage builds have no
+signing key, and Linux users update via emerge rather than the in-app
+updater.
+
+--- a/src-tauri/tauri.conf.json
++++ b/src-tauri/tauri.conf.json
+@@ -22,7 +22,7 @@
+ 	},
+ 	"bundle": {
+ 		"active": true,
+-		"createUpdaterArtifacts": true,
++		"createUpdaterArtifacts": false,
+ 		"targets": "all",
+ 		"externalBin": [
+ 			"../sidecar/dist/helmor-sidecar",

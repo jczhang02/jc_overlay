@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		Beads (bd) is a distributed graph issue tracker for AI agents,
+		built on Dolt for versioned, branchable issue databases.
+		Supports cross-session work tracking with dependencies and
+		persistent memory across conversation compaction.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">gastownhall/beads</remote-id>
+	</upstream>
+</pkgmetadata>

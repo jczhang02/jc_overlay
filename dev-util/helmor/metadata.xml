@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		Helmor is an open-source local workbench for multi-agent software
+		development — a Tauri 2 desktop client that orchestrates coding
+		agents (Claude Code, Codex, Cursor) into a review-test-merge loop.
+		Bundles a Bun-compiled sidecar that hosts the agent SDKs plus a
+		helmor-cli companion binary. Upstream ships macOS DMGs only; this
+		ebuild builds the Linux deb bundle from source via Tauri's
+		cross-platform build pipeline and extracts it into the image.
+
+		Build prerequisites pulled in via BDEPEND: bun-bin (gentoo-zh
+		overlay), Rust toolchain, webkit2gtk-4.1, libsoup-3, gtk3, glib,
+		librsvg.
+
+		Note: upstream has no Linux CI, so this ebuild is best-effort
+		until the Linux build path matures.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">dohooo/helmor</remote-id>
+	</upstream>
+</pkgmetadata>

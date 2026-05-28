@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Multica
+GenericName=Managed Agents Platform
+Comment=Open-source managed agents platform — assign tasks to coding agents
+Exec=multica-desktop %U
+Icon=multica-desktop
+Terminal=false
+Categories=Development;
+StartupWMClass=Multica
+StartupNotify=true
+MimeType=x-scheme-handler/multica;

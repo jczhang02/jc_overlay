@@ -1,0 +1,55 @@
+diff --git a/toolkit/xre/nsXREDirProvider.cpp b/toolkit/xre/nsXREDirProvider.cpp
+--- a/toolkit/xre/nsXREDirProvider.cpp
++++ b/toolkit/xre/nsXREDirProvider.cpp
+@@ -1333,11 +1333,14 @@
+   // Similar to nsXREDirProvider::AppendProfilePath.
+   // TODO: Bug 1990407 - Evaluate if refactoring might be required there in the
+   // future?
+   if (gAppData->profile) {
+     nsAutoCString profile;
+-    profile = gAppData->profile;
++    if (aIsDotted) {
++      profile.Assign('.');
++    }
++    profile.Append(gAppData->profile);
+     MOZ_TRY(aFile->AppendRelativeNativePath(profile));
+   } else {
+     nsAutoCString vendor;
+     nsAutoCString appName;
+     vendor = gAppData->vendor;
+@@ -1354,11 +1357,11 @@
+ }
+ 
+ /*
+  * Check if legacy directory exists, which can be:
+  *  (1) $HOME/.<gAppData->vendor>/<gAppData->appName>
+- *  (2) $HOME/<gAppData->profile>
++ *  (2) $HOME/.<gAppData->profile>
+  *  (3) $HOME/<MOZ_USER_DIR>
+  *
+  * The MOZ_USER_DIR will also be defined in case (1), so first check the deeper
+  * directory.
+  */
+@@ -1510,19 +1513,12 @@
+           PR_GetEnv("XPCSHELL_TEST_PROFILE_DIR");
+       MOZ_ASSERT(xpcshell, "gAppData can only be nullptr in xpcshell tests");
+       return NS_OK;
+     }
+ 
+-    // If the build was made against a specific profile name, MOZ_APP_PROFILE=
+-    // then make sure we respect this and dont move to XDG directory
+-    if (gAppData->profile) {
+-      MOZ_TRY(NS_NewNativeLocalFile(nsDependentCString(aHomeDir),
+-                                    getter_AddRefs(localDir)));
+-    } else {
+-      MOZ_TRY(GetLegacyOrXDGConfigHome(aHomeDir, getter_AddRefs(localDir)));
+-      MOZ_TRY(localDir->Clone(getter_AddRefs(parentDir)));
+-    }
++    MOZ_TRY(GetLegacyOrXDGConfigHome(aHomeDir, getter_AddRefs(localDir)));
++    MOZ_TRY(localDir->Clone(getter_AddRefs(parentDir)));
+ 
+     MOZ_TRY(AppendFromAppData(localDir, false));
+   }
+ 
+   // If required return the parent directory that matches the profile root
+

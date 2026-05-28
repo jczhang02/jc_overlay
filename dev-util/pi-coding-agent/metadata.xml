@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		pi (pi-coding-agent) is a terminal coding agent with multi-model
+		support, lifecycle hooks, and a TypeScript extension API. This
+		ebuild builds the single-file binary from the upstream pi-mono
+		monorepo source via bun --compile, mirroring upstream's
+		build:binary script. Compare to dev-util/pi-coding-agent-bin
+		from gentoo-zh, which ships the prebuilt release tarball.
+	</longdescription>
+	<use>
+		<flag name="system-fd">Pull in sys-apps/fd for the built-in find tool</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">earendil-works/pi</remote-id>
+	</upstream>
+</pkgmetadata>

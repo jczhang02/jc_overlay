@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		Open Design is a local-first, web-deployable design product. It detects
+		16 installed code-agent CLIs (Claude Code, Codex, Cursor Agent, Gemini
+		CLI, OpenCode, etc.) and drives them with composable Skills and brand
+		Design Systems to stream artifacts into a sandboxed preview. Falls back
+		to an OpenAI-compatible BYOK proxy when no local CLI is available.
+
+		This ebuild builds the Electron desktop shell (apps/desktop) from
+		source via pnpm + electron-builder, producing an AppImage that bundles
+		the daemon, web runtime, and Electron 41 runtime.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">nexu-io/open-design</remote-id>
+		<bugs-to>https://github.com/nexu-io/open-design/issues</bugs-to>
+	</upstream>
+</pkgmetadata>

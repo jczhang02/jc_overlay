@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		Multica is an open-source managed agents platform: turn coding
+		agents (Claude Code, Codex, etc.) into real teammates — assign
+		tasks, track progress, compound skills. This ebuild builds the
+		Multica desktop (Electron) client from source via the upstream
+		pnpm monorepo and electron-builder, including the bundled Go
+		CLI/daemon sidecar.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">multica-ai/multica</remote-id>
+	</upstream>
+</pkgmetadata>

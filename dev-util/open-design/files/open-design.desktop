@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Open Design
+GenericName=Local-first Design Product
+Comment=Open-source design product driven by local code-agent CLIs
+Exec=open-design %U
+Icon=open-design
+Terminal=false
+Categories=Development;Graphics;
+StartupWMClass=Open Design
+MimeType=x-scheme-handler/od;
+Keywords=design;prototype;agent;ai;

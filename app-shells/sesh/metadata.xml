@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		sesh is a CLI that helps you create and manage tmux sessions
+		quickly and easily using zoxide, fzf, and tmuxinator. It unifies
+		live tmux sessions, recent zoxide directories, tmuxinator configs,
+		and user-defined entries into a single fuzzy-selectable picker.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">joshmedeski/sesh</remote-id>
+	</upstream>
+</pkgmetadata>
