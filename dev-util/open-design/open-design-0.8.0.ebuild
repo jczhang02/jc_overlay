@@ -61,6 +61,12 @@ RDEPEND="
 
 QA_PREBUILT="opt/open-design/Open-Design.AppImage"
 
+# Backport upstream main's fix: the 0.8.0 tag forgot to add the new
+# @open-design/{download,host} runtime deps to tools-pack's packaging bundle,
+# so the Linux build dies fetching them from the public registry. See the
+# patch header for detail.
+PATCHES=( "${FILESDIR}"/open-design-0.8.0-bundle-host-download.patch )
+
 src_compile() {
 	# Sandbox all writes under ${T}.
 	export HOME="${T}/home"
@@ -103,15 +109,14 @@ src_compile() {
 	# --portable keeps namespace-base-root out of the artifact so the install
 	# can resolve its own runtime dirs under the user's Electron userData.
 	#
-	# 0.8.0 added @open-design/download as a workspace:* dep on
-	# @open-design/desktop. tools-pack's assembled-app prod install defaults
-	# to `npm install --omit=dev`, which can't resolve workspace: refs and
-	# 404s against the public registry. Pointing OD_TOOLS_PACK_PNPM_BIN at
-	# the bootstrapped pnpm binary routes that install through
-	# `pnpm install --prod --no-lockfile --config.node-linker=hoisted`,
-	# matching the Docker `electronuserland/builder` flow upstream uses.
-	# See tools/pack/src/linux.ts:resolveProductionInstallCommand.
-	export OD_TOOLS_PACK_PNPM_BIN="${PNPM_HOME}/bin/pnpm"
+	# tools-pack assembles the Electron app from file: tarballs of the
+	# workspace packages, then materializes its node_modules with a plain
+	# `npm install --omit=dev` (its default when OD_TOOLS_PACK_PNPM_BIN is
+	# unset). npm satisfies every nested @open-design/* dep from the bundled
+	# top-level file: tarballs, so no registry fetch happens -- as long as all
+	# of them are in INTERNAL_PACKAGES, which the bundle-host-download patch
+	# above ensures. Do NOT route this through pnpm: pnpm refuses to dedupe a
+	# registry-versioned nested dep against a file: tarball and 404s instead.
 	pnpm tools-pack linux build --to appimage --portable \
 		|| die "tools-pack linux build failed"
 }
