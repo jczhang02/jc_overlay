@@ -98,7 +98,7 @@ src_compile() {
 	# Steps performed by that script:
 	#   1. tsgo build packages/{tui,ai,agent}
 	#   2. tsgo build packages/coding-agent (emits dist/cli.js, dist/bun/cli.js)
-	#   3. bun build --compile dist/bun/cli.js -> dist/pi
+	#   3. bun build --compile dist/bun/cli.js plus image worker -> dist/pi
 	#   4. copy-binary-assets: theme, assets, docs, examples, photon WASM
 	einfo "Building pi single-file binary (bun --compile via build:binary)"
 	npm --prefix packages/coding-agent run build:binary \

@@ -3,7 +3,7 @@
 
 EAPI=8
 
-FIREFOX_PATCHSET="firefox-150-patches-04t.tar.xz"
+FIREFOX_PATCHSET="firefox-151-patches-01.tar.xz"
 
 LLVM_COMPAT=( 21 22 )
 
@@ -253,7 +253,9 @@ moz_install_xpi() {
 
 		# Determine extension ID
 		if [[ -f "${xpi_tmp_dir}/install.rdf" ]] ; then
-			emid=$(sed -n -e '/install-manifest/,$ { /em:id/!d; s/.*[\">]\([^\"<>]*\)[\"<].*/\1/; p; q }' "${xpi_tmp_dir}/install.rdf")
+			emid=$(sed -n -e \
+				'/install-manifest/,$ { /em:id/!d; s/.*[\">]\([^\"<>]*\)[\"<].*/\1/; p; q }' \
+				"${xpi_tmp_dir}/install.rdf")
 			[[ -z "${emid}" ]] && die "failed to determine extension id from install.rdf"
 		elif [[ -f "${xpi_tmp_dir}/manifest.json" ]] ; then
 			emid=$(sed -n -e 's/.*"id": "\([^"]*\)".*/\1/p' "${xpi_tmp_dir}/manifest.json")
@@ -482,13 +484,17 @@ src_prepare() {
 	rm -v "${WORKDIR}"/firefox-patches/*bgo-928126-enable-jxl.patch || die
 
 	if ! use llvm_slot_22 ; then
-		rm -v "${WORKDIR}"/firefox-patches/*bmo-2033279-make-rust-simd-work-with-rust-1.95-tb.patch || die
+		local simd_patch
+		for simd_patch in "${WORKDIR}"/firefox-patches/*bmo-2033279-make-rust-simd-work-with-rust-1.95-tb.patch; do
+			[[ -e ${simd_patch} ]] || continue
+			rm -v "${simd_patch}" || die
+		done
 	fi
 
 	eapply "${WORKDIR}/firefox-patches"
 
 	# bmo#2007074: stop creating stray empty ~/thunderbird dir on startup
-	eapply "${FILESDIR}/thunderbird-150.0.2-bmo2007074-no-home-dir.patch"
+	eapply "${FILESDIR}/thunderbird-151.0.1-bmo2007074-no-home-dir.patch"
 
 	# Allow user to apply any additional patches without modifing ebuild
 	eapply_user

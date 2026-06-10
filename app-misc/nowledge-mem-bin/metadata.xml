@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>jc@example.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<use>
+		<flag name="systemd">Install optional user and system systemd units for headless nmem serve.</flag>
+		<flag name="x11-workaround">Patch desktop launcher to use GTK X11 backend via XWayland, matching upstream Debian postinst workaround for WebKitGTK Wayland issues.</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">nowledge-co/nowledge-mem</remote-id>
+		<bugs-to>https://github.com/nowledge-co/nowledge-mem/issues</bugs-to>
+	</upstream>
+</pkgmetadata>

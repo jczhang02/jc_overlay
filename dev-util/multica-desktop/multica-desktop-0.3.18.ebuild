@@ -145,9 +145,20 @@ src_install() {
 	# Wrapper: extract-and-run avoids FUSE module-load slowness on hosts
 	# without fuse2; matches the Multica desktop launcher contract on the
 	# .deb/.rpm channels.
+	#
+	# The bundled CLI daemon (server/cmd/multica) is the LOCAL agent executor:
+	# it clones repos, builds git worktrees, and runs codex tasks under its
+	# "workspaces root". With no override the daemon plants that tree in
+	# ${HOME} as ~/multica_workspaces_desktop-<api-host> (config.go derives
+	# the dir from the per-host profile name). Pin MULTICA_WORKSPACES_ROOT to
+	# an XDG data path so the workspaces live under ~/.local/share instead of
+	# cluttering ${HOME}, and drop the ugly per-host suffix. `:=` keeps it a
+	# default — a user who exports their own MULTICA_WORKSPACES_ROOT wins.
 	dodir /usr/bin
 	cat > "${T}/multica-desktop" <<-'EOF' || die
 		#!/usr/bin/env bash
+		: "${MULTICA_WORKSPACES_ROOT:=${XDG_DATA_HOME:-${HOME}/.local/share}/multica/workspaces}"
+		export MULTICA_WORKSPACES_ROOT
 		exec /opt/multica-desktop/Multica.AppImage --appimage-extract-and-run "$@"
 	EOF
 	exeinto /usr/bin
@@ -177,7 +188,13 @@ pkg_postinst() {
 	elog "AppImage:  /opt/multica-desktop/Multica.AppImage"
 	elog
 	elog "First run will prompt for login. The bundled multica CLI/daemon"
-	elog "is launched automatically by the desktop client."
+	elog "is launched automatically by the desktop client and runs agent"
+	elog "tasks locally (repo clones, git worktrees, codex runs)."
+	elog
+	elog "Agent workspaces default to:"
+	elog "    \${XDG_DATA_HOME:-~/.local/share}/multica/workspaces"
+	elog "instead of the upstream ~/multica_workspaces_desktop-<host>. Export"
+	elog "MULTICA_WORKSPACES_ROOT before launching to point elsewhere."
 	elog
 	elog "Electron 39 needs kernel.unprivileged_userns_clone=1 (default on"
 	elog "modern kernels). If the renderer fails to start, pass --no-sandbox."
