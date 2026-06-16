@@ -9,7 +9,7 @@ EAPI=8
 BUN_PV="1.3.14"
 
 DESCRIPTION="A terminal-based coding agent with multi-model support (built from source)"
-HOMEPAGE="https://github.com/earendil-works/pi https://buildwithpi.ai"
+HOMEPAGE="https://github.com/earendil-works/pi https://pi.dev/"
 
 BUN_BASE="https://github.com/oven-sh/bun/releases/download/bun-v${BUN_PV}"
 SRC_URI="
@@ -36,7 +36,7 @@ IUSE="+system-fd"
 RESTRICT="network-sandbox mirror test strip"
 
 BDEPEND="
-	>=net-libs/nodejs-20.6.0[npm]
+	>=net-libs/nodejs-22.19.0[npm]
 	app-arch/unzip
 	app-arch/tar
 "
