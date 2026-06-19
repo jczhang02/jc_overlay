@@ -1,3 +1,8 @@
+---
+name: gentoo-overlay-package
+description: Gentoo overlay package maintenance workflows for adding, updating, bumping, modifying ebuilds, metadata.xml, Manifest, pkgcheck, and commit/push in this overlay. Use for package-scoped Gentoo overlay work.
+---
+
 # Gentoo Overlay Package Skill
 
 Use when user asks to add, update, bump, modify, or maintain software packages in this Gentoo overlay.
