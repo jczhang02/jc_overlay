@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		Codex Desktop Linux adapts the official macOS Codex Desktop DMG into
+		a runnable Linux Electron app. This live ebuild follows upstream main,
+		runs the wrapper installer, and installs the generated application tree
+		under /opt/codex-desktop-linux with a /usr/bin/codex-desktop launcher.
+		The upstream self-update manager is intentionally disabled so Portage
+		remains the update authority.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">ilysenko/codex-desktop-linux</remote-id>
+	</upstream>
+</pkgmetadata>
