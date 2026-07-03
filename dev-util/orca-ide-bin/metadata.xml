@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		Orca is a worktree-native IDE for running multiple CLI coding agents
+		(Codex, Claude Code, OpenCode, Pi, and others) side-by-side. It provides
+		terminal panes, managed git worktrees, diff review, orchestration, and a
+		desktop/mobile workflow for monitoring and steering agent sessions. This
+		ebuild installs the upstream Linux binary package.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">stablyai/orca</remote-id>
+		<bugs-to>https://github.com/stablyai/orca/issues</bugs-to>
+	</upstream>
+</pkgmetadata>
