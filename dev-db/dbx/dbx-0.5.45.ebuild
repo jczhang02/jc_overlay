@@ -9,7 +9,7 @@ DESCRIPTION="Open-source database management tool — 25+ databases in 15 MB"
 HOMEPAGE="https://github.com/t8y2/dbx"
 SRC_URI="https://github.com/t8y2/dbx/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
 
-LICENSE="AGPL-3"
+LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64"
 # Cargo + pnpm fetch dependencies online during src_compile.
@@ -28,7 +28,7 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}"
 BDEPEND="
-	>=net-libs/nodejs-20[corepack]
+	>=net-libs/nodejs-22.13.0[npm]
 	|| (
 		>=dev-lang/rust-1.77.2
 		>=dev-lang/rust-bin-1.77.2
@@ -43,13 +43,18 @@ src_prepare() {
 	export PNPM_HOME="${T}/pnpm"
 	export CARGO_HOME="${T}/cargo"
 	mkdir -p "${HOME}" "${PNPM_HOME}" "${CARGO_HOME}" || die
-	export PATH="${PNPM_HOME}:${PATH}"
+	export PATH="${PNPM_HOME}/bin:${PATH}"
 }
 
 src_compile() {
-	einfo "Activating pnpm via corepack"
-	corepack enable --install-directory "${PNPM_HOME}" || die
-	corepack prepare pnpm@latest --activate || die
+	local pnpm_pin
+	pnpm_pin=$(sed -n 's/.*"packageManager"[[:space:]]*:[[:space:]]*"\(pnpm@[^"]*\)".*/\1/p' \
+		package.json)
+	[[ -n ${pnpm_pin} ]] || die "could not read packageManager pin from package.json"
+
+	einfo "Bootstrapping ${pnpm_pin} via npm"
+	npm install --prefix "${PNPM_HOME}" --global "${pnpm_pin}" \
+		|| die "npm install ${pnpm_pin} failed"
 
 	einfo "Installing JS dependencies"
 	pnpm install --frozen-lockfile || die
