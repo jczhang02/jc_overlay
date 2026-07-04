@@ -3,7 +3,6 @@
 <pkgmetadata>
 	<upstream>
 		<remote-id type="sourceforge">xanmod</remote-id>
-		<remote-id type="gitlab">xanmod/linux</remote-id>
 	</upstream>
 	<maintainer type="person">
 		<email>OriPoin@outlook.com</email>
