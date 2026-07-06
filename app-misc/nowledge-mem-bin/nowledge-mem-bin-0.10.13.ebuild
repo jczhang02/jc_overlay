@@ -16,7 +16,7 @@ S="${WORKDIR}/${P}"
 LICENSE="all-rights-reserved"
 SLOT="0"
 KEYWORDS="-* ~amd64"
-IUSE="systemd +x11-workaround"
+IUSE="systemd x11-workaround"
 RESTRICT="mirror strip test"
 
 BDEPEND="
@@ -35,7 +35,7 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}"
 
-# Upstream ships a prebuilt desktop app, Python runtime, native extensions,
+# Upstream ships a prebuilt desktop app, Rust backend, native extensions,
 # and CLI helpers. Do not strip; treat installed payload as binary blob.
 QA_PREBUILT="*"
 QA_SONAME="*"
@@ -82,31 +82,27 @@ src_install() {
 	dodir /usr/bin
 	cat > "${ED}/usr/bin/nmem" <<-EOF || die
 		#!/usr/bin/env bash
-		PYTHON_STANDALONE="${EPREFIX}/usr/lib/Nowledge Mem/_up_/python-standalone"
-		PYTHON="\${PYTHON_STANDALONE}/python/bin/python3"
-		APP_SRC="\${PYTHON_STANDALONE}/app/src"
+		RUST_CLI="${EPREFIX}/usr/lib/Nowledge Mem/_up_/rust-backend/nmem"
 
-		if [[ ! -x \${PYTHON} ]]; then
-			echo "Error: bundled Python not found at \${PYTHON}" >&2
+		if [[ ! -x \${RUST_CLI} ]]; then
+			echo "Error: bundled Rust CLI not found at \${RUST_CLI}" >&2
 			exit 1
 		fi
 
-		export PYTHONPATH="\${APP_SRC}:\${PYTHONPATH}"
-		exec "\${PYTHON}" -m nowledge_graph_server.ncli "\$@"
+		exec "\${RUST_CLI}" "\$@"
 	EOF
 	fperms 0755 /usr/bin/nmem
 
 	cat > "${ED}/usr/bin/browse-now" <<-EOF || die
 		#!/usr/bin/env bash
-		PYTHON_STANDALONE="${EPREFIX}/usr/lib/Nowledge Mem/_up_/python-standalone"
-		PYTHON="\${PYTHON_STANDALONE}/python/bin/python3"
+		RUST_CLI="${EPREFIX}/usr/lib/Nowledge Mem/_up_/rust-backend/browse-now"
 
-		if [[ ! -x \${PYTHON} ]]; then
-			echo "Error: bundled Python not found at \${PYTHON}" >&2
+		if [[ ! -x \${RUST_CLI} ]]; then
+			echo "Error: bundled Rust CLI not found at \${RUST_CLI}" >&2
 			exit 1
 		fi
 
-		exec "\${PYTHON}" -c 'from browse_now.cli import main; main()' "\$@"
+		exec "\${RUST_CLI}" "\$@"
 	EOF
 	fperms 0755 /usr/bin/browse-now
 
@@ -130,6 +126,8 @@ src_install() {
 			Restart=on-failure
 			RestartSec=5
 			Environment=NMEM_API_URL=http://127.0.0.1:14242
+			Environment=NMEM_AI_NOW_HOME=%h/.local/share/NowledgeGraph/ai-now
+			Environment=NMEM_AI_NOW_RUNTIME_HOME=%h/.cache/nowledge-mem/ai-now-runtime
 			StandardOutput=journal
 			StandardError=journal
 			SyslogIdentifier=nmem
@@ -155,6 +153,8 @@ src_install() {
 			Environment=XDG_CONFIG_HOME=%h/.config
 			Environment=XDG_DATA_HOME=%h/.local/share
 			Environment=NMEM_API_URL=http://127.0.0.1:14242
+			Environment=NMEM_AI_NOW_HOME=%h/.local/share/NowledgeGraph/ai-now
+			Environment=NMEM_AI_NOW_RUNTIME_HOME=%h/.cache/nowledge-mem/ai-now-runtime
 			StandardOutput=journal
 			StandardError=journal
 			SyslogIdentifier=nmem
