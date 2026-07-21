@@ -27,6 +27,7 @@ RESTRICT="network-sandbox mirror strip test"
 # off in Gentoo, so npm is the lowest-friction path.
 BDEPEND="
 	>=net-libs/nodejs-24[npm]
+	<net-libs/nodejs-25[npm]
 	app-arch/tar
 	app-arch/gzip
 	dev-build/make
@@ -43,7 +44,8 @@ BDEPEND="
 # subslot, forces a rebuild whenever the Node ABI/soname set changes so the
 # bundled copy never goes stale.
 RDEPEND="
-	net-libs/nodejs:=
+	>=net-libs/nodejs-24:=
+	<net-libs/nodejs-25:=
 	dev-libs/glib
 	dev-libs/nss
 	dev-libs/nspr
