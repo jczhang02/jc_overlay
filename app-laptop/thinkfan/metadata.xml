@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<use>
+		<flag name="atasmart">Enable reading disk temperatures through libatasmart.</flag>
+		<flag name="lm-sensors">Enable reading temperatures through lm-sensors.</flag>
+		<flag name="nvidia">Enable reading GPU temperatures through the proprietary NVIDIA driver.</flag>
+		<flag name="yaml">Enable YAML configuration file support.</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">vmatare/thinkfan</remote-id>
+	</upstream>
+</pkgmetadata>
