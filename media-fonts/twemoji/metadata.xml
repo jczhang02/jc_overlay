@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<use>
+		<flag name="icons">Install individual PNG and SVG emoji icons alongside the color font.</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">jdecked/twemoji</remote-id>
+		<remote-id type="github">JoeBlakeB/ttf-twemoji</remote-id>
+	</upstream>
+</pkgmetadata>
