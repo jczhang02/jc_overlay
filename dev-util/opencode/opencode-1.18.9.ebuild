@@ -74,6 +74,9 @@ src_unpack() {
 src_compile() {
 	# Sandbox all caches under ${T}.
 	export BUN_INSTALL_CACHE_DIR="${T}/bun-cache"
+	# Bun 1.3.14 can intermittently fail while streaming npm tarballs
+	# (oven-sh/bun#34821 and #34861); use the buffered extraction path.
+	export BUN_FEATURE_FLAG_DISABLE_STREAMING_INSTALL=1
 	export HOME="${T}/home"
 	export XDG_CACHE_HOME="${T}/cache"
 	export npm_config_cache="${T}/npm-cache"
@@ -92,8 +95,10 @@ src_compile() {
 	einfo "Using bun $(bun --version) from ${T}/bun"
 
 	einfo "Installing workspace dependencies (bun)"
+	# A second process recovers complete tarballs cached after Bun reports a
+	# truncated download as an extraction failure (oven-sh/bun#34827).
 	bun install --frozen-lockfile \
-		|| bun install \
+		|| bun install --frozen-lockfile \
 		|| die "bun install failed"
 
 	einfo "Building opencode binary for current host (bun --compile, --single)"
