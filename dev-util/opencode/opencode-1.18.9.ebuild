@@ -94,12 +94,25 @@ src_compile() {
 
 	einfo "Using bun $(bun --version) from ${T}/bun"
 
-	einfo "Installing workspace dependencies (bun)"
-	# A second process recovers complete tarballs cached after Bun reports a
-	# truncated download as an extraction failure (oven-sh/bun#34827).
-	bun install --frozen-lockfile \
-		|| bun install --frozen-lockfile \
-		|| die "bun install failed"
+	einfo "Installing CLI workspace dependencies (bun)"
+	# Avoid unrelated Electron and Storybook workspaces, and reduce the default
+	# network fan-out from 48 requests. Separate processes preserve good cache
+	# entries when Bun misreports truncated responses (oven-sh/bun#34827).
+	local attempt
+	for attempt in 1 2 3; do
+		if bun install --frozen-lockfile --network-concurrency=8 \
+			--filter ./packages/opencode \
+			--filter ./packages/app; then
+			break
+		fi
+		[[ ${attempt} -lt 3 ]] || die "bun install failed after ${attempt} attempts"
+		ewarn "bun install attempt ${attempt}/3 failed; retrying with preserved cache"
+	done
+
+	# Path-filtered installs skip the root postinstall that normally runs this.
+	einfo "Applying node-pty workspace fix"
+	bun run --cwd packages/core fix-node-pty \
+		|| die "fix-node-pty failed"
 
 	einfo "Building opencode binary for current host (bun --compile, --single)"
 	# --single restricts build to host os/arch; baseline/musl variants skipped.
