@@ -29,7 +29,7 @@ BDEPEND="
 	app-arch/tar
 	app-arch/unzip
 	dev-build/make
-	net-misc/curl
+	>=net-misc/curl-7.71.0
 	sys-apps/util-linux
 	sys-devel/gcc
 	|| (
@@ -73,6 +73,9 @@ QA_PREBUILT="opt/${PN}/*"
 QA_SONAME="*"
 
 src_compile() {
+	local curl_bin
+	curl_bin=$(type -P curl) || die "curl executable not found"
+
 	# Sandbox all user/cache writes under ${T}. The source checkout itself stays
 	# writable for upstream Cargo target/ and generated build state.
 	export HOME="${T}/home"
@@ -86,7 +89,16 @@ src_compile() {
 	export PACKAGE_WITH_UPDATER=0
 	mkdir -p "${HOME}" "${XDG_CACHE_HOME}" "${XDG_CONFIG_HOME}" \
 		"${XDG_DATA_HOME}" "${CARGO_HOME}" "${npm_config_cache}" \
-		"${CODEX_MANAGED_NODE_CACHE_DIR}" || die
+		"${CODEX_MANAGED_NODE_CACHE_DIR}" "${T}/curl-bin" || die
+
+	# Upstream treats a single interrupted transfer as fatal. Add bounded retries
+	# to all build-time curl downloads without patching the live source tree.
+	cat > "${T}/curl-bin/curl" <<-EOF || die
+		#!/bin/sh
+		exec "${curl_bin}" --retry 3 --retry-delay 2 --retry-all-errors "\$@"
+	EOF
+	chmod 0755 "${T}/curl-bin/curl" || die
+	export PATH="${T}/curl-bin:${PATH}"
 
 	einfo "Building Codex Desktop Linux payload from upstream Codex.dmg"
 	./install.sh --fresh || die "install.sh failed"
