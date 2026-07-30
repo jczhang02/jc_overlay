@@ -117,9 +117,10 @@ src_install() {
 	dodir /usr/bin
 	cat > "${T}/codex-desktop" <<-EOF || die
 		#!/usr/bin/env bash
-		# GUI sessions commonly omit mise shims from PATH.
-		if [[ -z \${CODEX_CLI_PATH:-} ]]; then
-			mise_codex="\${XDG_DATA_HOME:-\${HOME}/.local/share}/mise/shims/codex"
+		# GUI sessions commonly omit mise shims from PATH. Use the real tool
+		# path because the upstream launcher canonicalizes symlinks before exec.
+		if [[ -z \${CODEX_CLI_PATH:-} ]] && command -v mise >/dev/null 2>&1; then
+			mise_codex="\$(mise which codex 2>/dev/null || true)"
 			if [[ -x \${mise_codex} ]]; then
 				export CODEX_CLI_PATH="\${mise_codex}"
 			fi
