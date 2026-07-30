@@ -3,7 +3,9 @@
 
 EAPI=8
 
-inherit desktop git-r3 xdg
+PYTHON_COMPAT=( python3_{11..15} )
+
+inherit desktop git-r3 python-single-r1 xdg
 
 DESCRIPTION="Unofficial Linux wrapper for OpenAI Codex Desktop"
 HOMEPAGE="https://github.com/ilysenko/codex-desktop-linux"
@@ -13,19 +15,22 @@ EGIT_BRANCH="main"
 LICENSE="MIT all-rights-reserved"
 SLOT="0"
 KEYWORDS=""
-REQUIRED_USE="elibc_glibc"
+REQUIRED_USE="elibc_glibc ${PYTHON_REQUIRED_USE}"
 
 # Upstream downloads mutable Codex.dmg, managed Node.js, Electron, npm modules,
 # and Cargo crates during install.sh. Generated Electron/Node/native payloads
 # must not be stripped.
 RESTRICT="network-sandbox mirror strip test"
 
+# install.sh checks these tools before generating the application payload.
 BDEPEND="
+	${PYTHON_DEPS}
 	app-arch/7zip
 	app-arch/tar
 	app-arch/unzip
 	dev-build/make
 	net-misc/curl
+	sys-apps/util-linux
 	sys-devel/gcc
 	|| (
 		dev-lang/rust
@@ -33,15 +38,18 @@ BDEPEND="
 	)
 "
 
-# Runtime deps for Electron/Chromium and launcher helpers. The app bundles its
-# own managed Node.js runtime under /opt/codex-desktop-linux/resources.
+# Runtime deps for Electron/Chromium, the Python webview server, and launcher
+# helpers. The app bundles its own managed Node.js runtime under
+# /opt/codex-desktop-linux/resources.
 RDEPEND="
+	${PYTHON_DEPS}
 	app-accessibility/at-spi2-core
 	dev-libs/glib
 	dev-libs/nss
 	dev-libs/nspr
 	media-libs/alsa-lib
 	media-libs/mesa
+	net-misc/curl
 	net-print/cups
 	sys-apps/dbus
 	x11-apps/xprop
