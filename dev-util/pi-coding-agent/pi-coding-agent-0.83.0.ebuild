@@ -31,7 +31,7 @@ SLOT="0"
 KEYWORDS="-* ~amd64 ~arm64"
 IUSE="+system-fd"
 
-# npm install pulls dependencies from the network and bun --compile embeds a
+# npm ci pulls dependencies from the network and bun --compile embeds a
 # bunfs section that portage strip would corrupt.
 RESTRICT="network-sandbox mirror test strip"
 
@@ -90,9 +90,18 @@ src_compile() {
 	# Install full monorepo workspace deps (tsgo, biome, all packages/*).
 	# The build:binary script of packages/coding-agent expects sibling
 	# workspaces (tui, ai, agent) to be built and node_modules populated.
-	einfo "Installing workspace dependencies (npm install)"
-	npm install --no-audit --no-fund --foreground-scripts \
-		|| die "npm install failed at monorepo root"
+	# npm can surface transient registry idle timeouts without recovering, so
+	# retry while retaining the cache under ${T}. Match upstream's release
+	# build by using the lockfile and disabling install lifecycle scripts.
+	local attempt
+	for attempt in 1 2 3; do
+		einfo "Installing workspace dependencies (npm ci, attempt ${attempt}/3)"
+		if npm ci --ignore-scripts --no-audit --no-fund; then
+			break
+		fi
+		(( attempt < 3 )) || die "npm ci failed at monorepo root after 3 attempts"
+		ewarn "npm ci failed; retrying with the populated download cache"
+	done
 
 	# Build the single-file binary via upstream's build:binary script.
 	# Steps performed by that script:
