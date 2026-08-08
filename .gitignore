@@ -7,3 +7,4 @@ profiles/use.local.desc
 *.swp
 *.swo
 .omc/
+.pi/
