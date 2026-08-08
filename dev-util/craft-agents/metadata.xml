@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<upstream>
+		<remote-id type="github">craft-ai-agents/craft-agents-oss</remote-id>
+	</upstream>
+	<longdescription lang="en">
+		Craft Agents is an open-source, agent-native desktop app by Craft Docs Ltd.
+		This package builds the Electron app from source: it installs dependencies
+		with bun, replicates the staging steps of upstream
+		apps/electron/scripts/build-linux.sh (vendored bun runtime, Claude Agent SDK
+		core + native binary, @vscode/ripgrep, network interceptor sources), runs
+		`bun run electron:build`, and packages the app with electron-builder
+		(--dir, no AppImage) into /opt/craft-agents.
+	</longdescription>
+	<longdescription lang="zh">
+		Craft Agents 是 Craft Docs Ltd. 开源的 agent 原生桌面应用。
+		本包从源码构建 Electron 应用：使用 bun 安装依赖，复刻上游
+		apps/electron/scripts/build-linux.sh 的 staging 步骤（内置 bun 运行时、
+		Claude Agent SDK 核心与原生二进制、@vscode/ripgrep、网络拦截器源码），
+		执行 `bun run electron:build`，并用 electron-builder（--dir，不生成
+		AppImage）打包到 /opt/craft-agents。
+	</longdescription>
+</pkgmetadata>
