@@ -3,9 +3,10 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_13 )
+# The bundled document-tool wrappers explicitly request Python 3.12 via uv.
+PYTHON_COMPAT=( python3_12 )
 
-inherit desktop python-single-r1
+inherit desktop python-single-r1 xdg
 
 # Craft Agents desktop app built from source. Two bun runtimes are involved:
 # - BUN_PV        : build-time toolchain (runs `bun install` / `bun run electron:build`)
@@ -13,21 +14,25 @@ inherit desktop python-single-r1
 #                   apps/electron/scripts/build-linux.sh (shipped inside the app)
 BUN_PV="1.3.14"
 BUN_RUNTIME_PV="1.3.9"
+UV_PV="0.10.6"
 
 DESCRIPTION="Open-source agent-native desktop app for Craft Agents"
 HOMEPAGE="https://agents.craft.do https://github.com/craft-ai-agents/craft-agents-oss"
 BUN_BASE="https://github.com/oven-sh/bun/releases/download/bun-v${BUN_PV}"
 BUN_RUNTIME_BASE="https://github.com/oven-sh/bun/releases/download/bun-v${BUN_RUNTIME_PV}"
+UV_BASE="https://github.com/astral-sh/uv/releases/download/${UV_PV}"
 
 # upstream pins bun-linux-x64-baseline for x64 (see build-linux.sh)
 SRC_URI="
 	https://github.com/craft-ai-agents/craft-agents-oss/archive/refs/tags/v${PV}.tar.gz
-		-> ${P}.tar.gz
+		-> ${PN}-${PV}.tar.gz
 	amd64? (
 		${BUN_BASE}/bun-linux-x64.zip
 			-> bun-${BUN_PV}-linux-x64.zip
 		${BUN_RUNTIME_BASE}/bun-linux-x64-baseline.zip
 			-> bun-v${BUN_RUNTIME_PV}-linux-x64-baseline.zip
+		${UV_BASE}/uv-x86_64-unknown-linux-gnu.tar.gz
+			-> uv-${UV_PV}-x86_64-unknown-linux-gnu.tar.gz
 	)
 "
 
@@ -41,8 +46,9 @@ KEYWORDS="-* ~amd64"
 REQUIRED_USE="elibc_glibc ${PYTHON_REQUIRED_USE}"
 
 # Build deps are fetched from npm/GitHub at build time (bun install, npm pack,
-# electron-builder electron dist, @vscode/ripgrep + sharp postinstalls).
-RESTRICT="network-sandbox mirror test strip"
+# electron-builder electron dist, @vscode/ripgrep + sharp postinstalls). The
+# bundled Claude Agent SDK is all-rights-reserved and must not enter binhosts.
+RESTRICT="bindist network-sandbox mirror test strip"
 
 # App bundles prebuilt Electron/Chromium, the ~210 MB Claude Agent SDK native
 # binary, bun, and uv — none can be stripped or rebuilt by portage.
@@ -59,6 +65,7 @@ BDEPEND="
 # bundled CLI tool scripts (markitdown/pdf-tool wrappers, see electron-builder.yml).
 RDEPEND="
 	app-accessibility/at-spi2-core
+	dev-libs/expat
 	dev-libs/glib
 	dev-libs/nss
 	dev-libs/nspr
@@ -67,6 +74,7 @@ RDEPEND="
 	media-libs/mesa
 	net-print/cups
 	sys-apps/dbus
+	virtual/udev
 	x11-libs/cairo
 	x11-libs/gtk+:3
 	x11-libs/libdrm
@@ -85,8 +93,19 @@ RDEPEND="
 	x11-misc/xdg-utils
 "
 
+src_prepare() {
+	default
+
+	# The scoped npm name produces the invalid Linux desktop ID
+	# "@craft-agent/electron.desktop", breaking craftagents:// registration.
+	sed -i 's/"name": "@craft-agent\/electron"/"name": "craft-agents"/' \
+		apps/electron/package.json || die
+	grep -q '"name": "craft-agents"' apps/electron/package.json \
+		|| die "failed to normalize Electron package name"
+}
+
 src_unpack() {
-	unpack "${P}.tar.gz"
+	unpack "${PN}-${PV}.tar.gz"
 
 	# Stage the build-time bun toolchain under ${T}/bun (keep it out of ${S}).
 	local bun_zip="bun-${BUN_PV}-linux-x64.zip"
@@ -106,6 +125,12 @@ src_unpack() {
 	pushd "${T}/bun-runtime" > /dev/null || die
 	unzip -q "${DISTDIR}/${runtime_zip}" || die "runtime bun zip extract failed"
 	popd > /dev/null
+
+	# Stage uv at the version pinned by upstream scripts/build/common.ts.
+	local uv_tar="uv-${UV_PV}-x86_64-unknown-linux-gnu.tar.gz"
+	mkdir -p "${T}/uv-runtime" || die
+	tar -xzf "${DISTDIR}/${uv_tar}" -C "${T}/uv-runtime" \
+		|| die "uv runtime tarball extract failed"
 }
 
 src_compile() {
@@ -163,6 +188,14 @@ src_compile() {
 	[[ -n ${runtime_bun} ]] || die "runtime bun binary not found"
 	cp "${runtime_bun}" "${electron_dir}/vendor/bun/bun" || die
 	chmod +x "${electron_dir}/vendor/bun/bun" || die
+
+	einfo "Staging vendored uv runtime"
+	local runtime_uv
+	runtime_uv=$(find "${T}/uv-runtime" -maxdepth 2 -name uv -type f -executable | head -n1)
+	[[ -n ${runtime_uv} ]] || die "uv runtime binary not found"
+	mkdir -p "${electron_dir}/resources/bin/linux-x64" || die
+	cp "${runtime_uv}" "${electron_dir}/resources/bin/linux-x64/uv" || die
+	chmod +x "${electron_dir}/resources/bin/linux-x64/uv" || die
 
 	einfo "Staging Claude Agent SDK core"
 	local sdk_source="${S}/node_modules/@anthropic-ai/claude-agent-sdk"
@@ -237,27 +270,24 @@ src_install() {
 	local unpacked="${S}/apps/electron/release/linux-unpacked"
 	[[ -d ${unpacked} ]] || die "linux-unpacked missing"
 
-	# Install the complete unpacked tree (cp -pR preserves exec bits/symlinks).
+	# Install the complete unpacked tree without preserving the build user's
+	# ownership; recursive cp keeps executable modes and symlinks intact.
 	dodir "/opt/${PN}"
-	cp -pR "${unpacked}"/. "${D}/opt/${PN}/" || die
+	cp -R "${unpacked}"/. "${D}/opt/${PN}/" || die
+	chmod -R a+rX "${D}/opt/${PN}" || die
 
 	# Electron sandbox helper needs setuid root, otherwise the app would need
 	# --no-sandbox to run.
 	fperms 4755 "/opt/${PN}/chrome-sandbox"
 
-	# Discover the launcher binary (name varies with electron-builder version).
-	local exe
-	exe=$(find "${D}/opt/${PN}" -maxdepth 1 -type f -perm /111 \
-		! -name chrome-sandbox ! -name '*.so' | head -n1)
-	[[ -n ${exe} ]] || die "launcher binary not found"
-	local exe_name
-	exe_name=$(basename "${exe}")
-	einfo "launcher: ${exe_name}"
-
+	# src_prepare normalizes the package name used by electron-builder.
+	local exe_name="craft-agents"
+	[[ -x ${D}/opt/${PN}/${exe_name} ]] || die "launcher binary not found: ${exe_name}"
 	dosym "../../opt/${PN}/${exe_name}" /usr/bin/craft-agents
 
-	doicon "${S}/apps/electron/resources/icon.png"
-	make_desktop_entry craft-agents "Craft Agents" craft-agents "Utility;"
+	newicon -s 512 "${S}/apps/electron/resources/icon.png" craft-agents.png
+	make_desktop_entry "craft-agents %U" "Craft Agents" craft-agents "Utility;" \
+		"StartupWMClass=Craft Agents\nMimeType=x-scheme-handler/craftagents;"
 
 	local d
 	for d in README.md LICENSE; do
@@ -266,6 +296,8 @@ src_install() {
 }
 
 pkg_postinst() {
+	xdg_pkg_postinst
+
 	elog "Craft Agents ${PV} installed. Launch with: craft-agents"
 	elog "Configuration and data live in ~/.craft-agent/ (incl. credentials.enc)."
 	elog "Updates are managed by Portage."
