@@ -1,0 +1,120 @@
+From 822c4b5d790d3499af56541d8f38eb246a6ea059 Mon Sep 17 00:00:00 2001
+From: ryushione <unluckyknight42@gmail.com>
+Date: Fri, 29 May 2026 11:34:55 +0900
+Subject: [PATCH] fix(electron): bundle Pi/session subprocess servers in dist
+ builds
+
+electron:dist[:dev]:mac ran electron:build (main/preload/renderer/
+resources/assets) but never built or copied the session-mcp-server and
+pi-agent-server bundles into apps/electron/resources/. electron-builder.yml
+already lists `resources/pi-agent-server/**/*` and
+`resources/session-mcp-server/**/*` in `files`, but those directories were
+never produced outside the full production build-dmg.sh path (absent from
+OSS), so they matched nothing.
+
+Result: packaged apps had no Pi subprocess. At runtime resolveServerPath
+(runtime-resolver.ts) found no
+`<app>/Contents/Resources/app/resources/pi-agent-server/index.js`, so
+piServerPath was undefined and every Pi SDK turn failed with
+"piServerPath not configured. Cannot spawn Pi subprocess."
+
+Add scripts/electron-build-subprocess.ts (reuses buildMcpServers +
+copySessionServer + copyPiAgentServer from scripts/build/common.ts, the
+same helpers the production build uses) and run it as the first step of
+electron:build via a new electron:build:subprocess script, so it lands in
+resources/ before electron:build:resources copies them into dist/.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+---
+ package.json                         |  3 +-
+ scripts/electron-build-subprocess.ts | 67 ++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+), 1 deletion(-)
+ create mode 100644 scripts/electron-build-subprocess.ts
+
+diff --git a/package.json b/package.json
+index 226d134844..efe9ee1c00 100644
+--- a/package.json
++++ b/package.json
+@@ -61,7 +61,8 @@
+     "electron:build:resources": "bun run scripts/electron-build-resources.ts",
+     "build:wa-worker": "bun run scripts/build-wa-worker.ts",
+     "electron:build:assets": "cd apps/electron && bun scripts/copy-assets.ts",
+-    "electron:build": "bun run electron:build:main && bun run electron:build:preload && bun run electron:build:renderer && bun run electron:build:resources && bun run electron:build:assets",
++    "electron:build:subprocess": "bun run scripts/electron-build-subprocess.ts",
++    "electron:build": "bun run electron:build:subprocess && bun run electron:build:main && bun run electron:build:preload && bun run electron:build:renderer && bun run electron:build:resources && bun run electron:build:assets",
+     "electron:start": "bun run electron:build && electron apps/electron",
+     "electron:dev": "bun run scripts/electron-dev.ts",
+     "electron:dev:terminal": "bun run scripts/electron-dev.ts --terminal",
+diff --git a/scripts/electron-build-subprocess.ts b/scripts/electron-build-subprocess.ts
+new file mode 100644
+index 0000000000..6147ddc4f4
+--- /dev/null
++++ b/scripts/electron-build-subprocess.ts
+@@ -0,0 +1,67 @@
++#!/usr/bin/env bun
++/**
++ * Build the bundled subprocess servers (session MCP + Pi agent) and copy them
++ * into `apps/electron/resources/` so electron-builder bundles them.
++ *
++ * The packaged runtime resolves these from
++ * `<app>/Contents/Resources/app/resources/{session-mcp-server,pi-agent-server}/index.js`
++ * (see packages/shared/src/agent/backend/internal/runtime-resolver.ts →
++ * resolveServerPath). Without this step `piServerPath` resolves to nothing and
++ * Pi SDK sessions fail with "piServerPath not configured. Cannot spawn Pi
++ * subprocess."
++ *
++ * The full production build (build-dmg.sh / build.ts) runs this via the
++ * buildMcpServers + copyPiAgentServer + copySessionServer helpers in
++ * scripts/build/common.ts. This standalone script makes the same step
++ * available to the OSS `electron:dist[:dev]:mac` commands, which otherwise
++ * only run `electron:build` and never populate these resources.
++ *
++ * Usage:
++ *   bun run scripts/electron-build-subprocess.ts                 # host platform/arch
++ *   bun run scripts/electron-build-subprocess.ts --arch=arm64    # explicit arch
++ *   bun run scripts/electron-build-subprocess.ts --platform=darwin --arch=arm64
++ */
++
++import { dirname, join } from 'path';
++import { fileURLToPath } from 'url';
++import { parseArgs } from 'util';
++import {
++  buildMcpServers,
++  copyPiAgentServer,
++  copySessionServer,
++  type Arch,
++  type BuildConfig,
++  type Platform,
++} from './build/common.ts';
++
++const { values } = parseArgs({
++  args: process.argv.slice(2),
++  options: {
++    platform: { type: 'string', default: process.platform },
++    arch: { type: 'string', default: process.arch === 'arm64' ? 'arm64' : 'x64' },
++  },
++  allowPositionals: true,
++});
++
++const platform = values.platform as Platform;
++const arch = values.arch as Arch;
++
++const scriptDir = dirname(fileURLToPath(import.meta.url));
++const rootDir = dirname(scriptDir);
++const electronDir = join(rootDir, 'apps', 'electron');
++
++const config: BuildConfig = {
++  platform,
++  arch,
++  upload: false,
++  uploadLatest: false,
++  uploadScript: false,
++  rootDir,
++  electronDir,
++};
++
++console.log(`Building bundled subprocess servers for ${platform}-${arch}...`);
++buildMcpServers(config);
++copySessionServer(config);
++copyPiAgentServer(config);
++console.log('Subprocess servers copied to apps/electron/resources/');

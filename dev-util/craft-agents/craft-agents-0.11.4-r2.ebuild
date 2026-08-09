@@ -93,6 +93,10 @@ RDEPEND="
 	x11-misc/xdg-utils
 "
 
+# Upstream PR #848 fixes source-built packages that omit the Pi and session
+# subprocess servers: https://github.com/craft-ai-agents/craft-agents-oss/pull/848
+PATCHES=( "${FILESDIR}/${PV}-bundle-subprocess-servers.patch" )
+
 src_prepare() {
 	default
 
@@ -257,6 +261,12 @@ src_compile() {
 	cd "${S}" || die
 	bun run electron:build || die "electron:build failed"
 
+	local server
+	for server in session-mcp-server pi-agent-server; do
+		[[ -s ${electron_dir}/resources/${server}/index.js ]] \
+			|| die "${server} was not staged into Electron resources"
+	done
+
 	einfo "Packaging with electron-builder (--dir, no AppImage)"
 	cd "${electron_dir}" || die
 	npx electron-builder --config electron-builder.yml --linux --x64 --dir \
@@ -264,6 +274,11 @@ src_compile() {
 
 	[[ -d ${electron_dir}/release/linux-unpacked ]] \
 		|| die "expected release/linux-unpacked output missing"
+	local packaged_app="${electron_dir}/release/linux-unpacked/resources/app"
+	for server in session-mcp-server pi-agent-server; do
+		[[ -s ${packaged_app}/resources/${server}/index.js ]] \
+			|| die "packaged ${server} missing"
+	done
 }
 
 src_install() {
