@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		OpenAI's official Linux preview of the unified ChatGPT desktop app.
+		It provides ChatGPT, ChatGPT Work, and Codex in one application, with
+		local projects, Git worktrees, integrated terminals, skills, plugins,
+		and long-running agent workflows. This package installs OpenAI's
+		prebuilt Linux payload and leaves application updates to Portage.
+	</longdescription>
+	<upstream>
+		<changelog>https://learn.chatgpt.com/docs/changelog</changelog>
+		<doc>https://learn.chatgpt.com/docs/app</doc>
+	</upstream>
+</pkgmetadata>
