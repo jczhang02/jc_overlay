@@ -88,7 +88,8 @@ src_install() {
 
 	dosym ../lib/chatgpt/codex-launcher /usr/bin/chatgpt
 	domenu usr/share/applications/chatgpt.desktop
-	newicon -s 1024 usr/share/pixmaps/chatgpt.png chatgpt.png
+	# hicolor does not universally register a 1024x1024 icon directory.
+	doicon usr/share/pixmaps/chatgpt.png
 	dodoc usr/share/doc/chatgpt/copyright
 
 	if use apparmor; then
