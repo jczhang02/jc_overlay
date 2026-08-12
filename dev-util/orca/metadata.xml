@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		Orca is an agentic development environment for desktop, mobile, and
+		headless servers. This package builds the TypeScript/React desktop app and
+		node-pty addon locally with Node.js and pnpm, then packages an unpacked
+		Electron application. A downstream patch keeps the native Linux window
+		frame and disables Orca's renderer-drawn controls, allowing GNOME/Mutter
+		to provide normal window decorations.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">stablyai/orca</remote-id>
+		<bugs-to>https://github.com/stablyai/orca/issues</bugs-to>
+	</upstream>
+</pkgmetadata>

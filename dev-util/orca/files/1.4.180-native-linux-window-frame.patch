@@ -1,0 +1,74 @@
+From: JC Zhang <chengrui0727@gmail.com>
+Subject: [PATCH] Keep native window decorations on Linux
+
+Electron's default Linux frame lets GNOME/Mutter draw the regular system
+titlebar and borders. Stop rendering Orca's duplicate window controls there.
+
+diff --git a/src/main/window/createMainWindow.test.ts b/src/main/window/createMainWindow.test.ts
+index b6d1ff7..0a182ae 100644
+--- a/src/main/window/createMainWindow.test.ts
++++ b/src/main/window/createMainWindow.test.ts
+@@ -205,10 +205,10 @@ describe('createMainWindow', () => {
+         titleBarStyle: 'hidden'
+       })
+     } else {
+-      // Linux: native frame is dropped so the renderer titlebar isn't stacked
+-      // under the WM title bar (double title bar). titleBarStyle stays unset.
++      // Linux keeps the native frame so the window manager draws its normal
++      // titlebar and borders. Both options therefore stay unset.
+       expect(browserWindowOptions.titleBarStyle).toBeUndefined()
+-      expect(browserWindowOptions.frame).toBe(false)
++      expect(browserWindowOptions.frame).toBeUndefined()
+     }
+ 
+     expect(windowHandlers.windowOpen({ url: 'https://example.com' })).toEqual({ action: 'deny' })
+@@ -296,7 +296,7 @@ describe('createMainWindow', () => {
+     for (const [platform, expected] of [
+       ['darwin', { titleBarStyle: 'hiddenInset', frame: undefined }],
+       ['win32', { titleBarStyle: 'hidden', frame: undefined }],
+-      ['linux', { titleBarStyle: undefined, frame: false }]
++      ['linux', { titleBarStyle: undefined, frame: undefined }]
+     ] satisfies [
+       NodeJS.Platform,
+       { titleBarStyle: string | undefined; frame: boolean | undefined }
+diff --git a/src/main/window/createMainWindow.ts b/src/main/window/createMainWindow.ts
+index 17bcd06..31340c1 100644
+--- a/src/main/window/createMainWindow.ts
++++ b/src/main/window/createMainWindow.ts
+@@ -282,8 +282,6 @@ export function createMainWindow(
+         : process.platform === 'win32'
+           ? 'hidden'
+           : undefined,
+-    // Why: Linux ignores titleBarStyle 'hidden'; frame:false drops the native frame so we don't get a double title bar (renderer draws its own).
+-    ...(process.platform === 'linux' ? { frame: false } : {}),
+     // Why: initial position for 1x zoom; syncTrafficLightPosition() adjusts on zoom change.
+     ...(process.platform === 'darwin'
+       ? {
+diff --git a/src/renderer/src/lib/desktop-window-chrome.test.ts b/src/renderer/src/lib/desktop-window-chrome.test.ts
+index a4bde14..7d7157d 100644
+--- a/src/renderer/src/lib/desktop-window-chrome.test.ts
++++ b/src/renderer/src/lib/desktop-window-chrome.test.ts
+@@ -2,9 +2,10 @@ import { describe, expect, it } from 'vitest'
+ import { shouldRenderDesktopWindowChrome } from './desktop-window-chrome'
+ 
+ describe('shouldRenderDesktopWindowChrome', () => {
+-  it('renders custom chrome for frameless desktop Linux and Windows windows', () => {
+-    expect(shouldRenderDesktopWindowChrome({ platform: 'linux', isWebClient: false })).toBe(true)
++  it('renders custom chrome only for frameless Windows desktop windows', () => {
+     expect(shouldRenderDesktopWindowChrome({ platform: 'win32', isWebClient: false })).toBe(true)
++    expect(shouldRenderDesktopWindowChrome({ platform: 'linux', isWebClient: false })).toBe(false)
++    expect(shouldRenderDesktopWindowChrome({ platform: 'darwin', isWebClient: false })).toBe(false)
+   })
+ 
+   it('keeps macOS on native traffic lights', () => {
+diff --git a/src/renderer/src/lib/desktop-window-chrome.ts b/src/renderer/src/lib/desktop-window-chrome.ts
+index 849b4bf..6e73360 100644
+--- a/src/renderer/src/lib/desktop-window-chrome.ts
++++ b/src/renderer/src/lib/desktop-window-chrome.ts
+@@ -11,5 +11,5 @@ export function shouldRenderDesktopWindowChrome({
+   platform,
+   isWebClient
+ }: DesktopWindowChromeInput): boolean {
+-  return !isWebClient && (platform === 'win32' || platform === 'linux')
++  return !isWebClient && platform === 'win32'
+ }
