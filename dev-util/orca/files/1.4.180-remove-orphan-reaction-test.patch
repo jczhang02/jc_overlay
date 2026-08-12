@@ -1,0 +1,37 @@
+From: JC Zhang <chengrui0727@gmail.com>
+Subject: [PATCH] Remove orphaned PR reaction test
+
+The release contains this test without the setPRCommentReaction function or
+any of its IPC and renderer callers. TypeScript therefore rejects the source
+before the application build starts.
+
+diff --git a/src/main/github/client.test.ts b/src/main/github/client.test.ts
+index 96b70b4..0b0ed35 100644
+--- a/src/main/github/client.test.ts
++++ b/src/main/github/client.test.ts
+@@ -4298,25 +4298,3 @@ describe('GitHub GraphQL rate-limit guard', () => {
+-  it('adds and removes PR comment reactions through GraphQL', async () => {
+-    getOwnerRepoMock.mockResolvedValue({ owner: 'acme', repo: 'widgets' })
+-    ghExecFileAsyncMock.mockResolvedValue({ stdout: '{}', stderr: '' })
+-
+-    await expect(setPRCommentReaction('/repo-root', 'IC_1', '+1', true)).resolves.toBe(true)
+-    await expect(setPRCommentReaction('/repo-root', 'PRRC_1', 'eyes', false)).resolves.toBe(true)
+-
+-    expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
+-      1,
+-      expect.arrayContaining(['subjectId=IC_1', 'content=THUMBS_UP']),
+-      expect.any(Object)
+-    )
+-    expect(ghExecFileAsyncMock.mock.calls[0]?.[0].join(' ')).toContain('addReaction')
+-    expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
+-      2,
+-      expect.arrayContaining(['subjectId=PRRC_1', 'content=EYES']),
+-      expect.any(Object)
+-    )
+-    expect(ghExecFileAsyncMock.mock.calls[1]?.[0].join(' ')).toContain('removeReaction')
+-    expect(noteRateLimitSpendMock).toHaveBeenCalledTimes(2)
+-  })
+-
+   it('hydrates GitHub-registered stack metadata for exact linked PRs', async () => {
+     getOwnerRepoMock.mockResolvedValue({ owner: 'stablyai', repo: 'orca', host: 'github.com' })
+     ghExecFileAsyncMock

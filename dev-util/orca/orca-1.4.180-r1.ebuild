@@ -77,7 +77,11 @@ RDEPEND="
 # TypeScript/React application and node-pty addon are built locally.
 QA_PREBUILT="opt/${PN}/*"
 
-PATCHES=( "${FILESDIR}/${PV}-native-linux-window-frame.patch" )
+PATCHES=(
+	"${FILESDIR}/${PV}-native-linux-window-frame.patch"
+	"${FILESDIR}/${PV}-remove-orphan-reaction-test.patch"
+	"${FILESDIR}/${PV}-skip-release-glibc-floor-check.patch"
+)
 
 src_prepare() {
 	default
