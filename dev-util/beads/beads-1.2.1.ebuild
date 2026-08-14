@@ -16,8 +16,8 @@ KEYWORDS="~amd64 ~arm64"
 # upstream, so allow network access during build.
 RESTRICT="network-sandbox mirror test strip"
 
-# go.mod pins go 1.26.2; rely on GOTOOLCHAIN=auto if local toolchain is older.
-BDEPEND=">=dev-lang/go-1.24"
+# go.mod pins go 1.26.5.
+BDEPEND=">=dev-lang/go-1.26.5"
 
 src_compile() {
 	export CGO_ENABLED=1
