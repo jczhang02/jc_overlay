@@ -1,11 +1,11 @@
-# Copyright 1999-2025 Gentoo Authors
+# Copyright 1999-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="8"
 ETYPE="sources"
 K_WANT_GENPATCHES="base extras"
-#Note: to bump xanmod, check K_GENPATCHES_VER in sys-kernel/gentoo-sources
-K_GENPATCHES_VER="9"
+# Note: to bump xanmod, check K_GENPATCHES_VER in sys-kernel/gentoo-sources
+K_GENPATCHES_VER="13"
 
 inherit check-reqs kernel-2
 detect_version
@@ -43,9 +43,6 @@ src_prepare() {
 	rm "${S}/tools/testing/selftests/tc-testing/action-ebpf"
 	# delete linux version patches
 	rm "${WORKDIR}"/*${MY_P}*.patch
-	# delete failed patches
-	rm "${WORKDIR}/1710_disable_sse4a.patch"
-	rm "${WORKDIR}/2701-drm-amdgpu-don-t-attach-the-tlb-fence-for-SI.patch"
 
 	local PATCHES=(
 		# xanmod patches
