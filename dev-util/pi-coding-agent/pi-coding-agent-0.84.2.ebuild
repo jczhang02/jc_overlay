@@ -4,7 +4,7 @@
 EAPI=8
 
 # pi-mono does not pin a packageManager field, so bun version is selected
-# locally. Keep aligned with dev-util/opencode where practical so the bun
+# locally. Keep aligned with net-libs/bun-bin where practical so the bun
 # distfile is shared across the overlay.
 BUN_PV="1.3.14"
 
