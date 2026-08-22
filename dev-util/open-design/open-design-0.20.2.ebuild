@@ -69,6 +69,13 @@ RDEPEND="
 "
 
 QA_PREBUILT="opt/open-design/*"
+# onnxruntime bundles foreign-arch and optional GPU providers; the amd64 CPU
+# runtime does not load these files without the matching hardware stack.
+REQUIRES_EXCLUDE="
+	opt/open-design/app/resources/app/node_modules/onnxruntime-node/bin/napi-v3/linux/arm64/*
+	opt/open-design/app/resources/app/node_modules/onnxruntime-node/bin/napi-v3/linux/x64/libonnxruntime_providers_cuda.so
+	opt/open-design/app/resources/app/node_modules/onnxruntime-node/bin/napi-v3/linux/x64/libonnxruntime_providers_tensorrt.so
+"
 
 src_compile() {
 	# Sandbox all writes under ${T}.
@@ -120,7 +127,10 @@ src_compile() {
 	# of them are in INTERNAL_PACKAGES. Do NOT route this through pnpm: pnpm
 	# refuses to dedupe registry-versioned nested deps against file: tarballs
 	# and 404s instead.
+	# electron-builder fetches release assets during this step and does not
+	# retry connection timeouts itself.
 	pnpm tools-pack linux build --to appimage --portable \
+		|| pnpm tools-pack linux build --to appimage --portable \
 		|| die "tools-pack linux build failed"
 }
 
@@ -144,14 +154,17 @@ src_install() {
 	# daemon validates OD_RESOURCE_ROOT against the Node binary inside the app
 	# tree. Extracting once gives those helpers stable paths and avoids repeated
 	# --appimage-extract-and-run startup cost.
-	local sq="${WORKDIR}/od-extract/squashfs-root"
-	mkdir -p "${WORKDIR}/od-extract" || die
+	# Extract directly into the image: keeping another complete tree in WORKDIR
+	# exceeds common PORTAGE_TMPDIR tmpfs sizes.
+	local sq="${ED}/opt/open-design/app"
+	dodir /opt/open-design
 	chmod +x "${appimage_abs}" 2>/dev/null
 	(
-		cd "${WORKDIR}/od-extract" \
-			&& "${appimage_abs}" --appimage-extract >/dev/null
+		cd "${ED}/opt/open-design" \
+			&& "${appimage_abs}" --appimage-extract >/dev/null \
+			&& mv squashfs-root app
 	) || die "AppImage --appimage-extract failed"
-	[[ -d ${sq} ]] || die "extraction produced no squashfs-root"
+	[[ -d ${sq} ]] || die "extraction produced no app tree"
 
 	# Paths (relative to the installed app root) the CLI wrappers depend on.
 	local od_rel_node="resources/open-design/bin/node"
@@ -160,14 +173,9 @@ src_install() {
 	[[ -f ${sq}/${od_rel_cli} ]]  || die "daemon CLI missing (${od_rel_cli})"
 	[[ -x ${sq}/AppRun ]]         || die "AppRun missing"
 
-	# Install the extracted tree (preserve symlinks + executable bits).
-	einfo "Installing app tree -> /opt/open-design/app"
-	dodir /opt/open-design
-	cp -a "${sq}" "${ED}/opt/open-design/app" || die "install app tree failed"
-
 	# `--appimage-extract` yields an OWNER-ONLY tree (directories mode 0700).
-	# cp -a preserves that, and once portage remaps ownership to root, an
-	# unprivileged user can no longer traverse /opt/open-design/app -- every
+	# Once portage remaps ownership to root, an unprivileged user can no longer
+	# traverse /opt/open-design/app -- every
 	# launcher then dies with "AppRun: Permission denied". Normalize the tree:
 	# directories + already-executable files become world-traversable, data
 	# files world-readable (a+rX adds execute only where it already exists).
