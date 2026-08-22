@@ -14,6 +14,6 @@
 	</longdescription>
 	<upstream>
 		<changelog>https://learn.chatgpt.com/docs/changelog</changelog>
-		<doc>https://learn.chatgpt.com/docs/app</doc>
+		<doc>https://learn.chatgpt.com/docs/linux/linux-app</doc>
 	</upstream>
 </pkgmetadata>

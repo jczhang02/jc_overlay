@@ -6,7 +6,7 @@ EAPI=8
 inherit desktop unpacker xdg
 
 DESCRIPTION="OpenAI's ChatGPT desktop app with ChatGPT Work and Codex"
-HOMEPAGE="https://learn.chatgpt.com/docs/app"
+HOMEPAGE="https://learn.chatgpt.com/docs/linux/linux-app"
 SRC_BASE="https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt"
 SRC_URI="
 	amd64? ( ${SRC_BASE}/chatgpt_${PV}_amd64.deb )
@@ -39,7 +39,7 @@ RDEPEND="
 	dev-vcs/git
 	media-libs/alsa-lib
 	media-libs/libglvnd
-	media-libs/mesa
+	media-libs/mesa[vulkan]
 	net-print/cups
 	sys-apps/coreutils
 	sys-apps/dbus
@@ -61,10 +61,6 @@ RDEPEND="
 	x11-libs/libXrandr
 	x11-libs/pango
 	x11-misc/xdg-utils
-	amd64? (
-		dev-libs/openssl:0/3
-		media-gfx/graphite2
-	)
 	apparmor? ( >=sys-apps/apparmor-4.0 )
 "
 
