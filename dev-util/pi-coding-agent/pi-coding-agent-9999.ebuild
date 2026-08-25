@@ -8,7 +8,7 @@ inherit git-r3
 # pi-mono does not pin a packageManager field, so bun version is selected
 # locally. Keep aligned with net-libs/bun-bin where practical so the bun
 # distfile is shared across the overlay.
-BUN_PV="1.3.14"
+BUN_PV="1.4.0"
 
 DESCRIPTION="A terminal-based coding agent with multi-model support (built from source)"
 HOMEPAGE="https://github.com/earendil-works/pi https://pi.dev/"
