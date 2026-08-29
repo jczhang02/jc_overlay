@@ -110,9 +110,7 @@ src_compile() {
 	einfo "  pnpm    $(pnpm --version)"
 
 	einfo "Installing workspace dependencies (pnpm, ~1GB download)"
-	pnpm install --frozen-lockfile \
-		|| pnpm install \
-		|| die "pnpm install failed"
+	pnpm install --frozen-lockfile || die "pnpm install failed"
 
 	einfo "Building Linux desktop AppImage (electron-builder)"
 	# --to appimage produces a single .AppImage with bundled Electron 41.
