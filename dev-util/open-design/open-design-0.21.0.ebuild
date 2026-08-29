@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit desktop
+inherit check-reqs desktop
 
 DESCRIPTION="Local-first design product, open-source alternative to Claude Design"
 HOMEPAGE="https://github.com/nexu-io/open-design"
@@ -17,6 +17,7 @@ LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="-* ~amd64"
 REQUIRED_USE="elibc_glibc"
+CHECKREQS_DISK_BUILD="16G"
 
 # pnpm fetch + electron-builder need network; AppImage payload contains
 # bundled Electron 41 + native modules; portage strip would corrupt the
@@ -128,7 +129,6 @@ src_compile() {
 	# electron-builder fetches release assets during this step and does not
 	# retry connection timeouts itself.
 	pnpm tools-pack linux build --to appimage --portable \
-		|| pnpm tools-pack linux build --to appimage --portable \
 		|| die "tools-pack linux build failed"
 }
 
