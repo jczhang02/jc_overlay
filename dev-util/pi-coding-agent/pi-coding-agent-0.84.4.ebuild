@@ -48,10 +48,6 @@ RDEPEND="
 
 QA_PREBUILT="opt/${PN}/pi"
 
-PATCHES=(
-	"${FILESDIR}/${P}-cloudflare-api-type.patch"
-)
-
 src_unpack() {
 	# Unpack only the pi source tarball; the bun zip is staged manually
 	# under ${T}/bun so it doesn't pollute ${S}.
