@@ -32,6 +32,7 @@ BDEPEND="
 	<net-libs/nodejs-25[npm]
 	dev-build/cmake
 	dev-build/make
+	dev-util/patchelf
 	sys-devel/binutils
 	sys-devel/gcc
 	virtual/pkgconfig
@@ -132,6 +133,9 @@ src_install() {
 
 	dodir "/opt/${PN}"
 	cp -a "${appdir}/." "${ED}/opt/${PN}/" || die "failed to install Orca"
+	patchelf --set-rpath '$ORIGIN' \
+		"${ED}/opt/${PN}/resources/node_modules/sherpa-onnx-linux-x64/sherpa-onnx.node" \
+		|| die "failed to sanitize sherpa-onnx RUNPATH"
 	chmod -R a+rX "${ED}/opt/${PN}" || die "failed to normalize installed permissions"
 	fperms 4755 "/opt/${PN}/chrome-sandbox"
 
