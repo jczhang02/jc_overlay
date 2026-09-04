@@ -89,7 +89,7 @@ src_compile() {
 
 	# Install full monorepo workspace deps (tsgo, biome, all packages/*).
 	# The build:binary script of packages/coding-agent expects sibling
-	# workspaces (tui, telemetry, ai, agent, protocol, client) to be built
+	# workspaces (chord, tui, telemetry, ai, agent, protocol, client) to be built
 	# and node_modules populated.
 	# npm can surface transient registry idle timeouts without recovering, so
 	# retry while retaining the cache under ${T}. Match upstream's release
@@ -104,11 +104,15 @@ src_compile() {
 		ewarn "npm ci failed; retrying with the populated download cache"
 	done
 
+	# Upstream build:binary omits chord, whose declarations are required by
+	# coding-agent/tsconfig.build.json.
+	npm --prefix packages/chord run build || die "chord build failed"
+
 	# Build the single-file binary via upstream's build:binary script.
 	# Steps performed by that script:
 	#   1. tsgo build packages/{tui,telemetry,ai,agent,protocol,client}
-	#   2. tsgo build packages/coding-agent (emits dist/cli.js, dist/bun/cli.js)
-	#   3. bun build --compile dist/bun/cli.js plus image worker -> dist/pi
+	#   2. build packages/coding-agent (TypeScript and Node bundles)
+	#   3. bun build --compile src/bun/cli.ts plus image worker -> dist/pi
 	#   4. copy-binary-assets: theme, assets, export-html, docs, examples,
 	#      photon WASM
 	einfo "Building pi single-file binary (bun --compile via build:binary)"
