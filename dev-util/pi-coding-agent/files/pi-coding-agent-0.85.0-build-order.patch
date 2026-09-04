@@ -1,0 +1,9 @@
+Build chord and server before coding-agent, matching the workspace dependency order.
+
+--- a/packages/coding-agent/package.json
++++ b/packages/coding-agent/package.json
+@@ -43,3 +43,3 @@
+ 		"build:unbundled": "tsgo -p tsconfig.build.json && shx chmod +x dist/cli.js dist/rpc-entry.js && npm run copy-assets",
+-		"build:binary": "npm --prefix ../tui run build && npm --prefix ../telemetry run build && npm --prefix ../ai run build && npm --prefix ../agent run build && npm --prefix ../protocol run build && npm --prefix ../client run build && npm run build && bun build --compile --no-compile-autoload-bunfig ./src/bun/cli.ts ./src/utils/image-resize-worker.ts --outfile dist/pi && npm run copy-binary-assets",
++		"build:binary": "npm --prefix ../chord run build && npm --prefix ../tui run build && npm --prefix ../telemetry run build && npm --prefix ../ai run build && npm --prefix ../agent run build && npm --prefix ../protocol run build && npm --prefix ../client run build && npm --prefix ../server run build && npm run build && bun build --compile --no-compile-autoload-bunfig ./src/bun/cli.ts ./src/utils/image-resize-worker.ts --outfile dist/pi && npm run copy-binary-assets",
+ 		"copy-assets": "shx mkdir -p dist/modes/interactive/theme && shx cp src/modes/interactive/theme/*.json dist/modes/interactive/theme/ && shx mkdir -p dist/modes/interactive/assets && shx cp src/modes/interactive/assets/*.png dist/modes/interactive/assets/ && shx mkdir -p dist/core/export-html/vendor && shx cp src/core/export-html/template.html src/core/export-html/template.css src/core/export-html/template.js dist/core/export-html/ && shx cp src/core/export-html/vendor/*.js dist/core/export-html/vendor/",

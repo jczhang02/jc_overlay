@@ -48,6 +48,8 @@ RDEPEND="
 
 QA_PREBUILT="opt/${PN}/pi"
 
+PATCHES=( "${FILESDIR}/${PN}-0.85.0-build-order.patch" )
+
 src_unpack() {
 	# Unpack only the pi source tarball; the bun zip is staged manually
 	# under ${T}/bun so it doesn't pollute ${S}.
@@ -88,9 +90,7 @@ src_compile() {
 	einfo "Using node $(node --version) and npm $(npm --version)"
 
 	# Install full monorepo workspace deps (tsgo, biome, all packages/*).
-	# The build:binary script of packages/coding-agent expects sibling
-	# workspaces (chord, tui, telemetry, ai, agent, protocol, client) to be built
-	# and node_modules populated.
+	# build:binary builds the required sibling workspaces before coding-agent.
 	# npm can surface transient registry idle timeouts without recovering, so
 	# retry while retaining the cache under ${T}. Match upstream's release
 	# build by using the lockfile and disabling install lifecycle scripts.
@@ -104,17 +104,8 @@ src_compile() {
 		ewarn "npm ci failed; retrying with the populated download cache"
 	done
 
-	# Upstream build:binary omits chord, whose declarations are required by
-	# coding-agent/tsconfig.build.json.
-	npm --prefix packages/chord run build || die "chord build failed"
-
-	# Build the single-file binary via upstream's build:binary script.
-	# Steps performed by that script:
-	#   1. tsgo build packages/{tui,telemetry,ai,agent,protocol,client}
-	#   2. build packages/coding-agent (TypeScript and Node bundles)
-	#   3. bun build --compile src/bun/cli.ts plus image worker -> dist/pi
-	#   4. copy-binary-assets: theme, assets, export-html, docs, examples,
-	#      photon WASM
+	# The patched upstream script builds chord and server in dependency order,
+	# then compiles the binary and copies its runtime assets.
 	einfo "Building pi single-file binary (bun --compile via build:binary)"
 	npm --prefix packages/coding-agent run build:binary \
 		|| die "pi build:binary failed"
