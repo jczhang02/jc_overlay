@@ -12,6 +12,11 @@
 		and long-running agent workflows. This package installs OpenAI's
 		prebuilt Linux payload and leaves application updates to Portage.
 	</longdescription>
+	<use>
+		<flag name="apparmor">Install the AppArmor profile for unprivileged user namespaces</flag>
+		<flag name="qt6">Enable Qt 6 desktop integration</flag>
+		<flag name="wayland">Run under Wayland natively instead of XWayland</flag>
+	</use>
 	<upstream>
 		<changelog>https://learn.chatgpt.com/docs/changelog</changelog>
 		<doc>https://learn.chatgpt.com/docs/linux/linux-app</doc>
