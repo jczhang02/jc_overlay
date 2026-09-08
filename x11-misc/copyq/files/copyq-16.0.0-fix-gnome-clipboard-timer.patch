@@ -1,0 +1,60 @@
+Subject: [PATCH] Initialize clipboard timers before receiving GNOME notifications
+
+GNOME clipboard notifications can arrive before startMonitoringBackend().
+Starting m_timerCheckAgain in that state uses QTimer's default repeating,
+zero-interval configuration without a timeout handler, causing a busy loop.
+
+Initialize all clipboard timers in the constructor. Keep invalidating data
+guards on clipboard changes, but do not start monitoring work without
+subscribers.
+
+Related symptom report: https://github.com/hluk/CopyQ/issues/3677
+This specific timer failure was diagnosed locally on CopyQ 16.0.0 with
+GNOME 49.9, Qt 6.11.2 and KGuiAddons 6.29.0.
+
+--- a/src/platform/x11/x11platformclipboard.cpp
++++ b/src/platform/x11/x11platformclipboard.cpp
+@@ -473,6 +473,15 @@ private:
+ 
+ X11PlatformClipboard::X11PlatformClipboard()
+ {
++    // GNOME notifications can arrive before monitoring starts.
++    initSingleShotTimer( &m_timerCheckAgain, 0, this, &X11PlatformClipboard::check );
++    initSingleShotTimer( &m_clipboardData.timerEmitChange, 0, this, [this](){
++        useNewClipboardData(&m_clipboardData);
++    } );
++    initSingleShotTimer( &m_selectionData.timerEmitChange, 0, this, [this](){
++        useNewClipboardData(&m_selectionData);
++    } );
++
+     m_clipboardData.mode = ClipboardMode::Clipboard;
+     m_selectionData.mode = ClipboardMode::Selection;
+ 
+@@ -548,16 +557,6 @@ void X11PlatformClipboard::startMonitoringBackend(
+         }
+     }
+ 
+-    initSingleShotTimer( &m_timerCheckAgain, 0, this, &X11PlatformClipboard::check );
+-
+-    initSingleShotTimer( &m_clipboardData.timerEmitChange, 0, this, [this](){
+-        useNewClipboardData(&m_clipboardData);
+-    } );
+-
+-    initSingleShotTimer( &m_selectionData.timerEmitChange, 0, this, [this](){
+-        useNewClipboardData(&m_selectionData);
+-    } );
+-
+     m_monitoring = true;
+ 
+     DummyClipboard::startMonitoringBackend(formats, modes);
+@@ -673,6 +672,10 @@ void X11PlatformClipboard::onChanged(int mode)
+     ++clipboardData.sequenceNumber;
+     clipboardData.ignoreNext = false;
+ 
++    // Invalidate existing data guards, but do not start monitoring work without subscribers.
++    if (!m_monitoring)
++        return;
++
+     // Store the current window title right after the clipboard/selection changes.
+     // This makes sure that the title points to the correct clipboard/selection
+     // owner most of the times.

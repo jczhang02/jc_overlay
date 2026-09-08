@@ -55,6 +55,7 @@ BDEPEND="
 PATCHES=(
 	# used in tests
 	"${FILESDIR}/${P}-support-plugin-dir-envvar.patch"
+	"${FILESDIR}/${P}-fix-gnome-clipboard-timer.patch"
 )
 
 src_configure() {
