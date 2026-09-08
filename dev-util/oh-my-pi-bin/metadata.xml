@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		Oh My Pi is a terminal AI coding agent with multi-provider support,
+		native search and shell tools, subagents, and MCP integration.
+		This package installs the upstream standalone executable with an
+		embedded Bun runtime as omp.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">can1357/oh-my-pi</remote-id>
+	</upstream>
+</pkgmetadata>
