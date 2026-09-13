@@ -3,23 +3,28 @@
 
 EAPI=8
 
-inherit desktop optfeature pax-utils unpacker xdg
+PYTHON_COMPAT=( python3_{11..15} )
+
+inherit desktop optfeature pax-utils python-any-r1 unpacker xdg
 
 DESCRIPTION="Desktop application for ChatGPT and Codex"
 HOMEPAGE="https://chatgpt.com/download/"
 SRC_BASE="https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt"
+PDFJS_PV="5.4.296"
 SRC_URI="
 	amd64? ( ${SRC_BASE}/chatgpt_${PV}_amd64.deb )
 	arm64? ( ${SRC_BASE}/chatgpt_${PV}_arm64.deb )
+	https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-${PDFJS_PV}.tgz
 "
 S=${WORKDIR}
 
-LICENSE="ChatGPT-Desktop"
+LICENSE="ChatGPT-Desktop BSD"
 SLOT="0"
 KEYWORDS="-* ~amd64 ~arm64"
 IUSE="apparmor qt6 wayland"
 RESTRICT="bindist mirror strip"
 
+BDEPEND="${PYTHON_DEPS}"
 RDEPEND="
 	>=app-accessibility/at-spi2-core-2.46.0:2
 	app-misc/ca-certificates
@@ -61,6 +66,11 @@ QA_PREBUILT="opt/${PN}/*"
 src_prepare() {
 	default
 
+	# The bundled PDF.js omits the CMaps needed by some CJK fonts.
+	"${PYTHON}" "${FILESDIR}/${PN}-pdf-cmaps.py" \
+		usr/lib/chatgpt/resources/app.asar "${WORKDIR}/package" \
+		"${PV}" "${PDFJS_PV}" || die "Failed to patch PDF CMap resources"
+
 	local arch=x64
 	use arm64 && arch=arm64
 
@@ -91,6 +101,10 @@ src_prepare() {
 	fi
 }
 
+src_test() {
+	"${PYTHON}" -B "${FILESDIR}/test-${PN}-pdf-cmaps.py" || die "PDF CMap tests failed"
+}
+
 src_install() {
 	dodir /opt
 	mv usr/lib/chatgpt "${ED}/opt/${PN}" || die
@@ -101,6 +115,7 @@ src_install() {
 	domenu usr/share/applications/chatgpt.desktop
 	doicon usr/share/pixmaps/chatgpt.png
 	dodoc usr/share/doc/chatgpt/copyright
+	newdoc package/cmaps/LICENSE pdfjs-cmaps-LICENSE
 
 	if use apparmor; then
 		insinto /etc/apparmor.d
