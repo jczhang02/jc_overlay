@@ -21,7 +21,7 @@ S=${WORKDIR}
 LICENSE="ChatGPT-Desktop BSD"
 SLOT="0"
 KEYWORDS="-* ~amd64 ~arm64"
-IUSE="apparmor qt6 wayland"
+IUSE="apparmor +native-decorations qt6 wayland"
 RESTRICT="bindist mirror strip"
 
 BDEPEND="${PYTHON_DEPS}"
@@ -71,6 +71,12 @@ src_prepare() {
 		usr/lib/chatgpt/resources/app.asar "${WORKDIR}/package" \
 		"${PV}" "${PDFJS_PV}" || die "Failed to patch PDF CMap resources"
 
+	if use native-decorations; then
+		"${PYTHON}" -B "${FILESDIR}/${PN}-native-decorations.py" \
+			usr/lib/chatgpt/resources/app.asar "${PV}" \
+			|| die "Failed to patch native window decorations"
+	fi
+
 	local arch=x64
 	use arm64 && arch=arm64
 
@@ -103,6 +109,7 @@ src_prepare() {
 
 src_test() {
 	"${PYTHON}" -B "${FILESDIR}/test-${PN}-pdf-cmaps.py" || die "PDF CMap tests failed"
+	"${PYTHON}" -B "${FILESDIR}/test-${PN}-native-decorations.py" || die "Native decoration tests failed"
 }
 
 src_install() {

@@ -14,6 +14,7 @@
 	</longdescription>
 	<use>
 		<flag name="apparmor">Install the AppArmor profile for unprivileged user namespaces</flag>
+		<flag name="native-decorations">Use system title bars and window decorations instead of the custom title bar overlay</flag>
 		<flag name="qt6">Enable Qt 6 desktop integration</flag>
 		<flag name="wayland">Run under Wayland natively instead of XWayland</flag>
 	</use>
