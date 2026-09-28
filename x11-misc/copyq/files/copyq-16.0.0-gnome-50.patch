@@ -1,0 +1,16 @@
+Subject: [PATCH] Add support for GNOME 50
+
+Backport of the metadata change from upstream commit
+3425fd7535cc0c5f255222b5aaa13a7134507736 (hluk/CopyQ#3699).
+Without it GNOME Shell 50 marks the clipboard monitor extension as
+out of date and CopyQ stops receiving clipboard changes on Wayland.
+
+--- a/shared/gnome-extension/metadata.json
++++ b/shared/gnome-extension/metadata.json
+@@ -2,5 +2,5 @@
+   "name": "CopyQ Clipboard Monitor",
+   "description": "Forwards GNOME clipboard changes to active CopyQ sessions.",
+   "uuid": "copyq-clipboard@hluk.github.com",
+-  "shell-version": ["45", "46", "47", "48", "49"]
++  "shell-version": ["45", "46", "47", "48", "49", "50"]
+ }
