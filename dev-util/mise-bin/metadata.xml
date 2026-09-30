@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		mise is a polyglot dev tool version manager, environment variable
+		manager and task runner. This ebuild installs the prebuilt glibc
+		release binary and man page from upstream's GitHub releases.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">jdx/mise</remote-id>
+	</upstream>
+</pkgmetadata>
