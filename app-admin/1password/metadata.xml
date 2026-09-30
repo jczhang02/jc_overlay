@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		Forked from ::gentoo-zh to add the cli flag, which pulls in
+		app-admin/op-cli-bin for the desktop app's CLI integration.
+	</longdescription>
+	<use>
+		<flag name="cli">Install the 1Password CLI (<pkg>app-admin/op-cli-bin</pkg>) for desktop app integration</flag>
+		<flag name="mcp">Install the 1Password MCP server binary</flag>
+		<flag name="policykit">Install Polkit policy for system authentication unlock</flag>
+	</use>
+</pkgmetadata>
