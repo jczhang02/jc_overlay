@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		op is the 1Password command line tool. This ebuild installs the
+		prebuilt upstream binary setgid onepassword-cli, which the 1Password
+		desktop app requires for CLI integration. It carries newer versions
+		than ::gentoo, which is stuck at 2.23.0.
+	</longdescription>
+</pkgmetadata>
