@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<use>
+		<flag name="gvisor">Enable gvisor stack support</flag>
+		<flag name="smart">Build the vernesong fork with Smart proxy groups instead of upstream Mihomo</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">MetaCubeX/mihomo</remote-id>
+	</upstream>
+</pkgmetadata>
