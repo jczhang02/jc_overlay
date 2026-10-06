@@ -17,7 +17,7 @@ EGIT_COMMIT="v${PV}"
 
 LICENSE="BSD GPL-3-with-openssl-exception LGPL-2+"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="amd64"
 
 IUSE="dbus enchant +fonts +libdispatch screencast wayland webkit +X"
 
