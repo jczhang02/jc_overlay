@@ -78,6 +78,7 @@ BDEPEND="
 "
 
 PATCHES=(
+	"${FILESDIR}"/ayugram-desktop-6.3.10-tgcalls-cstdint.patch
 	"${FILESDIR}"/tdesktop-6.3.2-loosen-minizip.patch
 	"${FILESDIR}"/tdesktop-6.5.1-zlib-1.3.2.patch
 )
