@@ -1128,6 +1128,12 @@ src_prepare() {
 	# Gentoo provides the toolchain; do not ask for a rustup channel.
 	rm rust-toolchain.toml || die
 
+	# .npmrc sets engine-strict, and every pnpm call (including those
+	# from package scripts and turbo) checks all workspace projects.
+	# apps/web is the website, which is not built here, and pins node
+	# 24.x; the workspace root only needs >=24.
+	sed -i 's/"node": "24\.x"/"node": ">=24"/' apps/web/package.json || die
+
 	# turbo runs package scripts through "pnpm" from PATH.
 	mkdir -p "${T}/bin" || die
 	cat > "${T}/bin/pnpm" <<-EOF || die
@@ -1161,10 +1167,7 @@ src_compile() {
 	local -x CHANNEL="release"
 	local -x GITBUTLER_REQUIRE_MCP_APP=1
 
-	# .npmrc sets engine-strict, and apps/web (the website, not built
-	# here) pins node 24.x; the workspace root only needs >=24.
-	pnpm install --frozen-lockfile --config.engine-strict=false \
-		--store-dir "${T}/pnpm-store" || die
+	pnpm install --frozen-lockfile --store-dir "${T}/pnpm-store" || die
 	pnpm --filter @gitbutler/but-mcp-app build || die
 	pnpm build:desktop -- --mode production || die
 
