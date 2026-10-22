@@ -1,0 +1,1218 @@
+# Copyright 1999-2026 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+EAPI=8
+
+CRATES="
+	addr2line@0.25.1
+	adler2@2.0.1
+	aes@0.8.4
+	ahash@0.7.8
+	aho-corasick@1.1.4
+	alloc-no-stdlib@2.0.4
+	alloc-stdlib@0.2.4
+	allocation-counter@0.8.1
+	allocator-api2@0.2.21
+	android_log-sys@0.3.2
+	android_logger@0.15.1
+	android_system_properties@0.1.5
+	ansi-to-tui@8.0.1
+	anstream@0.6.21
+	anstream@1.0.0
+	anstyle-lossy@1.1.5
+	anstyle-parse@0.2.7
+	anstyle-parse@1.0.0
+	anstyle-query@1.1.5
+	anstyle-svg@0.1.12
+	anstyle-wincon@3.0.11
+	anstyle@1.0.14
+	anyhow@1.0.103
+	approx@0.5.1
+	arbitrary@1.4.2
+	arboard@3.6.1
+	arc-swap@1.9.2
+	arrayvec@0.7.7
+	async-broadcast@0.7.2
+	async-channel@2.5.0
+	async-compression@0.4.42
+	async-executor@1.14.0
+	async-io@2.6.0
+	async-lock@3.4.2
+	async-openai-macros@0.3.0
+	async-openai@0.38.2
+	async-process@2.5.0
+	async-recursion@1.1.1
+	async-signal@0.2.14
+	async-task@4.7.1
+	async-trait@0.1.89
+	atk-sys@0.18.2
+	atk@0.18.2
+	atomic-waker@1.1.2
+	atomic@0.6.1
+	autocfg@1.5.1
+	aws-lc-rs@1.17.1
+	aws-lc-sys@0.42.0
+	axum-core@0.5.6
+	axum@0.8.9
+	backoff@0.4.0
+	backtrace@0.3.76
+	base64@0.21.7
+	base64@0.22.1
+	bincode@1.3.3
+	bit-set@0.5.3
+	bit-set@0.8.0
+	bit-vec@0.6.3
+	bit-vec@0.8.0
+	bitflags@1.3.2
+	bitflags@2.13.0
+	bitvec@1.1.1
+	block-buffer@0.10.4
+	block-buffer@0.12.1
+	block-padding@0.3.3
+	block2@0.6.2
+	block@0.1.6
+	blocking@1.6.2
+	boolean-enums@0.4.1
+	borsh-derive@1.7.0
+	borsh@1.7.0
+	brotli-decompressor@5.0.3
+	brotli@8.0.4
+	bs58@0.5.1
+	bstr@1.12.3
+	bumpalo@3.20.3
+	by_address@1.2.1
+	byte-unit@5.2.5
+	bytecheck@0.6.12
+	bytecheck_derive@0.6.12
+	bytemuck@1.25.0
+	byteorder-lite@0.1.0
+	byteorder@1.5.0
+	bytes@1.12.0
+	bytesize@2.4.0
+	bzip2@0.6.1
+	cairo-rs@0.18.5
+	cairo-sys-rs@0.18.2
+	camino@1.2.4
+	cargo-platform@0.1.9
+	cargo_metadata@0.19.2
+	cargo_toml@0.22.3
+	castaway@0.2.4
+	cbc@0.1.2
+	cc@1.2.65
+	cesu8@1.1.0
+	cfb@0.7.3
+	cfg-expr@0.15.8
+	cfg-if@1.0.4
+	cfg_aliases@0.2.1
+	chardetng@0.1.17
+	chrono@0.4.45
+	cipher@0.4.4
+	clap@4.6.1
+	clap_builder@4.6.0
+	clap_complete@4.6.6
+	clap_derive@4.6.1
+	clap_lex@1.1.0
+	clipboard-win@5.4.1
+	clru@0.6.3
+	cmake@0.1.58
+	cocoa-foundation@0.2.1
+	cocoa@0.26.1
+	colorchoice@1.0.5
+	colored@3.1.1
+	combine@4.6.7
+	command-group@5.0.1
+	compact_str@0.9.1
+	compression-codecs@0.4.38
+	compression-core@0.4.32
+	concurrent-queue@2.5.0
+	console-api@0.9.0
+	console-subscriber@0.5.0
+	const-random-macro@0.1.16
+	const-random@0.1.18
+	convert_case@0.10.0
+	convert_case@0.11.0
+	cookie@0.18.1
+	core-foundation-sys@0.8.7
+	core-foundation@0.10.1
+	core-foundation@0.9.4
+	core-graphics-types@0.2.0
+	core-graphics@0.24.0
+	core-graphics@0.25.0
+	cpufeatures@0.2.17
+	cpufeatures@0.3.0
+	crc-catalog@2.5.0
+	crc32fast@1.5.0
+	crc@3.4.0
+	critical-section@1.2.0
+	crossbeam-channel@0.5.15
+	crossbeam-deque@0.8.6
+	crossbeam-epoch@0.9.18
+	crossbeam-utils@0.8.21
+	crossterm@0.28.1
+	crossterm@0.29.0
+	crossterm_winapi@0.9.1
+	crosstermion@0.16.0
+	crunchy@0.2.4
+	crypto-common@0.1.7
+	crypto-common@0.2.2
+	csscolorparser@0.6.2
+	cssparser-macros@0.6.1
+	cssparser@0.36.0
+	ctor-proc-macro@0.0.7
+	ctor@0.6.3
+	ctor@0.8.0
+	ctor@1.0.7
+	curl-sys@0.4.90+curl-8.21.0
+	curl@0.4.50
+	darling@0.20.11
+	darling@0.23.0
+	darling_core@0.20.11
+	darling_core@0.23.0
+	darling_macro@0.20.11
+	darling_macro@0.23.0
+	dashmap@6.2.1
+	data-encoding@2.11.0
+	dbus-secret-service@4.1.0
+	dbus@0.9.11
+	defmt-macros@1.1.0
+	defmt-parser@1.0.0
+	defmt@1.1.0
+	deltae@0.3.2
+	deranged@0.5.8
+	derive_arbitrary@1.4.2
+	derive_builder@0.20.2
+	derive_builder_core@0.20.2
+	derive_builder_macro@0.20.2
+	derive_more-impl@2.1.1
+	derive_more@2.1.1
+	deser-hjson@2.2.6
+	diff@0.1.13
+	digest@0.10.7
+	digest@0.11.3
+	dirs-sys@0.5.0
+	dirs@6.0.0
+	dispatch2@0.3.1
+	displaydoc@0.2.6
+	dlopen2@0.8.2
+	dlopen2_derive@0.4.3
+	dlv-list@0.5.2
+	document-features@0.2.12
+	dom_query@0.27.0
+	downcast-rs@1.2.1
+	dpi@0.1.2
+	dtoa-short@0.3.5
+	dtoa@1.0.11
+	dtor-proc-macro@0.0.6
+	dtor@0.1.1
+	dtor@0.3.0
+	dunce@1.0.5
+	dyn-clone@1.0.20
+	either@1.16.0
+	embed-resource@3.0.9
+	embed_plist@1.2.2
+	encoding_rs@0.8.35
+	endi@1.1.1
+	enumflags2@0.7.12
+	enumflags2_derive@0.7.12
+	env_filter@0.1.4
+	equivalent@1.0.2
+	erased-serde@0.4.10
+	errno@0.3.14
+	error-code@3.3.2
+	euclid@0.22.14
+	event-listener-strategy@0.5.4
+	event-listener@5.4.1
+	eventsource-stream@0.2.3
+	fallible-iterator@0.3.0
+	fallible-streaming-iterator@0.1.9
+	fancy-regex@0.11.0
+	fast-srgb8@1.0.0
+	faster-hex@0.10.0
+	fastrand@2.4.1
+	fax@0.2.7
+	fdeflate@0.3.7
+	fern@0.7.1
+	field-offset@0.3.6
+	file-id@0.2.3
+	filedescriptor@0.8.3
+	filetime@0.2.29
+	find-msvc-tools@0.1.9
+	finl_unicode@1.4.0
+	fixedbitset@0.4.2
+	fixedbitset@0.5.7
+	flate2@1.1.9
+	flume@0.11.1
+	fnv@1.0.7
+	foldhash@0.1.5
+	foldhash@0.2.0
+	foreign-types-macros@0.2.3
+	foreign-types-shared@0.3.1
+	foreign-types@0.5.0
+	form_urlencoded@1.2.2
+	fs_extra@1.3.0
+	fsevent-sys@4.1.0
+	fslock@0.2.1
+	funty@2.0.0
+	futures-channel@0.3.32
+	futures-core@0.3.32
+	futures-executor@0.3.32
+	futures-io@0.3.32
+	futures-lite@2.6.1
+	futures-macro@0.3.32
+	futures-sink@0.3.32
+	futures-task@0.3.32
+	futures-timer@3.0.4
+	futures-util@0.3.32
+	futures@0.3.32
+	fuzzy-matcher@0.3.7
+	gdk-pixbuf-sys@0.18.0
+	gdk-pixbuf@0.18.5
+	gdk-sys@0.18.2
+	gdk@0.18.2
+	gdkwayland-sys@0.18.2
+	gdkx11-sys@0.18.2
+	gdkx11@0.18.2
+	generic-array@0.14.7
+	gethostname@1.1.0
+	getrandom@0.2.17
+	getrandom@0.3.4
+	getrandom@0.4.3
+	getset@0.1.7
+	gimli@0.32.3
+	gio-sys@0.18.1
+	gio@0.18.4
+	git-url-parse@0.6.0
+	git2-hooks@0.7.0
+	gix-path@0.11.3
+	gix-trace@0.1.20
+	gix-validate@0.11.2
+	glib-macros@0.18.5
+	glib-sys@0.18.1
+	glib@0.18.5
+	glob@0.3.3
+	globset@0.4.18
+	gobject-sys@0.18.0
+	gtk-sys@0.18.2
+	gtk3-macros@0.18.2
+	gtk@0.18.2
+	h2@0.4.15
+	half@2.7.1
+	hash32@0.3.1
+	hashbrown@0.12.3
+	hashbrown@0.14.5
+	hashbrown@0.15.5
+	hashbrown@0.16.1
+	hashbrown@0.17.1
+	hashlink@0.11.1
+	hdrhistogram@7.5.4
+	heapless@0.8.0
+	heck@0.4.1
+	heck@0.5.0
+	hermit-abi@0.5.2
+	hex@0.4.3
+	hkdf@0.12.4
+	hmac@0.12.1
+	html-escape@0.2.13
+	html5ever@0.38.0
+	http-body-util@0.1.3
+	http-body@1.0.1
+	http@1.4.2
+	httparse@1.10.1
+	httpdate@1.0.3
+	humantime@2.3.0
+	hybrid-array@0.4.13
+	hyper-rustls@0.27.9
+	hyper-timeout@0.5.2
+	hyper-util@0.1.20
+	hyper@1.10.1
+	iana-time-zone-haiku@0.1.2
+	iana-time-zone@0.1.65
+	ico@0.5.0
+	icu_collections@2.2.0
+	icu_locale_core@2.2.0
+	icu_normalizer@2.2.0
+	icu_normalizer_data@2.2.0
+	icu_properties@2.2.0
+	icu_properties_data@2.2.0
+	icu_provider@2.2.0
+	ident_case@1.0.1
+	idna@1.1.0
+	idna_adapter@1.2.2
+	ignore@0.4.26
+	image@0.25.10
+	indexmap@1.9.3
+	indexmap@2.14.0
+	indoc@2.0.7
+	infer@0.19.0
+	inotify-sys@0.1.5
+	inotify@0.11.2
+	inout@0.1.4
+	instability@0.3.12
+	instant@0.1.13
+	inventory@0.3.24
+	io-close@0.3.7
+	ipnet@2.12.0
+	is-docker@0.2.0
+	is-terminal@0.4.17
+	is-wsl@0.4.0
+	is_ci@1.2.0
+	is_terminal_polyfill@1.70.2
+	itertools@0.14.0
+	itoa@1.0.18
+	javascriptcore-rs-sys@1.1.1
+	javascriptcore-rs@1.1.2
+	jiff-static@0.2.31
+	jiff-tzdb-platform@0.1.3
+	jiff-tzdb@0.1.6
+	jiff@0.2.31
+	jni-macros@0.22.4
+	jni-sys-macros@0.4.1
+	jni-sys@0.3.1
+	jni-sys@0.4.1
+	jni@0.21.1
+	jni@0.22.4
+	jobserver@0.1.34
+	js-sys@0.3.103
+	json-patch@3.0.1
+	jsonptr@0.6.3
+	kasuari@0.4.12
+	keyboard-types@0.7.0
+	keyring@3.6.3
+	kqueue-sys@1.1.2
+	kqueue@1.2.0
+	lab@0.11.0
+	lazy_static@1.5.0
+	libappindicator-sys@0.9.0
+	libappindicator@0.9.0
+	libbz2-rs-sys@0.2.5
+	libc@0.2.186
+	libdbus-sys@0.2.7
+	libloading@0.7.4
+	libloading@0.9.0
+	libm@0.2.16
+	libredox@0.1.17
+	libsqlite3-sys@0.37.0
+	libz-sys@1.1.29
+	line-clipping@0.3.7
+	linux-keyutils@0.2.5
+	linux-raw-sys@0.12.1
+	linux-raw-sys@0.4.15
+	litemap@0.8.2
+	litrs@1.0.0
+	lock_api@0.4.14
+	log@0.4.33
+	lru-slab@0.1.2
+	lru@0.18.0
+	mac-notification-sys@0.6.15
+	mac_address@1.1.8
+	machine-uid@0.5.4
+	malloc_buf@0.0.6
+	markup5ever@0.38.0
+	matchers@0.2.0
+	matchit@0.8.4
+	md5@0.8.0
+	memchr@2.8.2
+	memmap2@0.9.11
+	memmem@0.1.1
+	memoffset@0.9.1
+	mime@0.3.17
+	mime_guess@2.0.5
+	minimal-lexical@0.2.1
+	minisign-verify@0.2.5
+	miniz_oxide@0.8.9
+	mio@1.2.1
+	mock_instant@0.6.1
+	moxcms@0.8.1
+	muda@0.19.3
+	nanorand@0.7.0
+	napi-build@2.3.2
+	napi-derive-backend@5.0.5
+	napi-derive@3.5.7
+	napi-sys@3.2.2
+	napi@3.9.4
+	ndk-sys@0.6.0+11769913
+	ndk@0.9.0
+	new_debug_unreachable@1.0.6
+	nix@0.27.1
+	nix@0.29.0
+	nix@0.30.1
+	nix@0.31.3
+	nohash-hasher@0.2.0
+	nom@7.1.3
+	nom@8.0.0
+	nonempty@0.12.0
+	normalize-line-endings@0.3.0
+	normpath@1.5.1
+	notify-rust@4.18.0
+	notify-types@2.1.0
+	notify@8.2.0
+	ntapi@0.4.3
+	nu-ansi-term@0.50.3
+	num-bigint@0.4.6
+	num-complex@0.4.6
+	num-conv@0.2.2
+	num-derive@0.4.2
+	num-integer@0.1.46
+	num-iter@0.1.45
+	num-rational@0.4.2
+	num-traits@0.2.19
+	num@0.4.3
+	num_enum@0.7.6
+	num_enum_derive@0.7.6
+	num_threads@0.1.7
+	numtoa@0.2.4
+	objc2-app-kit@0.3.2
+	objc2-cloud-kit@0.3.2
+	objc2-core-data@0.3.2
+	objc2-core-foundation@0.3.2
+	objc2-core-graphics@0.3.2
+	objc2-core-image@0.3.2
+	objc2-core-location@0.3.2
+	objc2-core-text@0.3.2
+	objc2-encode@4.1.0
+	objc2-exception-helper@0.1.1
+	objc2-foundation@0.3.2
+	objc2-io-kit@0.3.2
+	objc2-io-surface@0.3.2
+	objc2-osa-kit@0.3.2
+	objc2-quartz-core@0.3.2
+	objc2-ui-kit@0.3.2
+	objc2-user-notifications@0.3.2
+	objc2-web-kit@0.3.2
+	objc2@0.6.4
+	objc@0.2.7
+	object@0.37.3
+	once_cell@1.21.4
+	once_cell_polyfill@1.70.2
+	onig@6.5.3
+	onig_sys@69.9.3
+	open@5.3.6
+	opener@0.8.5
+	openssl-probe@0.1.6
+	openssl-probe@0.2.1
+	openssl-src@300.6.1+3.6.3
+	openssl-sys@0.9.117
+	option-ext@0.2.0
+	ordered-float@4.6.0
+	ordered-multimap@0.7.3
+	ordered-stream@0.2.0
+	os_info@3.15.0
+	os_pipe@1.2.3
+	osakit@0.3.1
+	owo-colors@4.3.0
+	palette@0.7.6
+	palette_derive@0.7.6
+	pango-sys@0.18.0
+	pango@0.18.3
+	parking@2.2.1
+	parking_lot@0.12.5
+	parking_lot_core@0.9.12
+	pastey@0.2.3
+	percent-encoding@2.3.2
+	pest@2.8.6
+	pest_derive@2.8.6
+	pest_generator@2.8.6
+	pest_meta@2.8.6
+	petgraph@0.8.3
+	phf@0.11.3
+	phf@0.13.1
+	phf_codegen@0.11.3
+	phf_codegen@0.13.1
+	phf_generator@0.11.3
+	phf_generator@0.13.1
+	phf_macros@0.11.3
+	phf_macros@0.13.1
+	phf_shared@0.11.3
+	phf_shared@0.13.1
+	pin-project-internal@1.1.13
+	pin-project-lite@0.2.17
+	pin-project@1.1.13
+	piper@0.2.5
+	pkg-config@0.3.33
+	plist@1.9.0
+	png@0.17.16
+	png@0.18.1
+	polling@3.11.0
+	portable-atomic-util@0.2.7
+	portable-atomic@1.13.1
+	posthog-rs@0.23.3
+	potential_utf@0.1.5
+	powerfmt@0.2.0
+	ppv-lite86@0.2.21
+	precomputed-hash@0.1.1
+	pretty_assertions@1.4.1
+	proc-macro-crate@1.3.1
+	proc-macro-crate@2.0.2
+	proc-macro-crate@3.5.0
+	proc-macro-error-attr2@2.0.0
+	proc-macro-error-attr@1.0.4
+	proc-macro-error2@2.0.1
+	proc-macro-error@1.0.4
+	proc-macro2@1.0.106
+	prodash@31.0.0
+	prost-derive@0.14.4
+	prost-types@0.14.4
+	prost@0.14.4
+	ptr_meta@0.1.4
+	ptr_meta_derive@0.1.4
+	pulldown-cmark@0.13.4
+	pxfm@0.1.29
+	quick-error@2.0.1
+	quick-xml@0.37.5
+	quick-xml@0.39.4
+	quinn-proto@0.11.15
+	quinn-udp@0.5.14
+	quinn@0.11.11
+	quote@1.0.46
+	r-efi@5.3.0
+	r-efi@6.0.0
+	radium@0.7.0
+	rand@0.8.6
+	rand@0.9.4
+	rand_chacha@0.3.1
+	rand_chacha@0.9.0
+	rand_core@0.6.4
+	rand_core@0.9.5
+	ratatui-core@0.1.2
+	ratatui-crossterm@0.1.2
+	ratatui-macros@0.7.2
+	ratatui-termina@0.1.0
+	ratatui-termion@0.1.2
+	ratatui-termwiz@0.1.2
+	ratatui-textarea@0.8.0
+	ratatui-widgets@0.3.2
+	ratatui@0.30.2
+	raw-window-handle@0.6.2
+	redox_syscall@0.5.18
+	redox_users@0.5.2
+	ref-cast-impl@1.0.25
+	ref-cast@1.0.25
+	regex-automata@0.4.14
+	regex-syntax@0.8.11
+	regex@1.12.4
+	relative-path@1.9.3
+	rend@0.4.2
+	reqwest@0.13.4
+	rfd@0.16.0
+	ring@0.17.14
+	rkyv@0.7.46
+	rkyv_derive@0.7.46
+	rmcp-macros@0.16.0
+	rmcp@0.16.0
+	rsqlite-vfs@0.1.1
+	rstest@0.26.1
+	rstest_macros@0.26.1
+	rusqlite@0.39.0
+	rust-ini@0.21.3
+	rust_decimal@1.42.1
+	rustc-demangle@0.1.27
+	rustc-hash@2.1.2
+	rustc_version@0.4.1
+	rustix@0.38.44
+	rustix@1.1.4
+	rustls-native-certs@0.8.4
+	rustls-pki-types@1.15.0
+	rustls-platform-verifier-android@0.1.1
+	rustls-platform-verifier@0.7.0
+	rustls-webpki@0.103.13
+	rustls@0.23.41
+	rustversion@1.0.22
+	ryu@1.0.23
+	same-file@1.0.6
+	sapling-renderdag@0.1.0
+	schannel@0.1.29
+	schemars@0.8.22
+	schemars@0.9.0
+	schemars@1.2.1
+	schemars_derive@0.8.22
+	schemars_derive@1.2.1
+	scopeguard@1.2.0
+	seahash@4.1.0
+	secrecy@0.10.3
+	secret-service@4.0.0
+	security-framework-sys@2.17.0
+	security-framework@2.11.1
+	security-framework@3.7.0
+	selectors@0.36.1
+	self_cell@1.2.2
+	semver@1.0.28
+	serde-error@0.1.3
+	serde-untagged@0.1.9
+	serde@1.0.228
+	serde_core@1.0.228
+	serde_derive@1.0.228
+	serde_derive_internals@0.29.1
+	serde_json@1.0.150
+	serde_json_lenient@0.2.4
+	serde_path_to_error@0.1.20
+	serde_repr@0.1.20
+	serde_spanned@0.6.9
+	serde_spanned@1.1.1
+	serde_urlencoded@0.7.1
+	serde_with@3.21.0
+	serde_with_macros@3.21.0
+	serial_test@3.5.0
+	serial_test_derive@3.5.0
+	serialize-to-javascript-impl@0.1.2
+	serialize-to-javascript@0.1.2
+	servo_arc@0.4.3
+	sha1-checked@0.10.0
+	sha1@0.10.6
+	sha2@0.10.9
+	sha2@0.11.0
+	sharded-slab@0.1.7
+	shared_child@1.1.1
+	shell-words@1.1.1
+	shellexpand@3.1.2
+	shlex@2.0.1
+	sigchld@0.2.4
+	signal-hook-mio@0.2.5
+	signal-hook-registry@1.4.8
+	signal-hook@0.3.18
+	signal-hook@0.4.4
+	simd-adler32@0.3.9
+	simd_cesu8@1.1.1
+	simdutf8@0.1.5
+	similar@2.7.0
+	siphasher@1.0.3
+	slab@0.4.12
+	smallvec@1.15.2
+	smawk@0.3.3
+	snapbox-macros@0.4.0
+	snapbox@0.6.24
+	socket2@0.6.4
+	softbuffer@0.4.8
+	soup3-sys@0.5.0
+	soup3@0.5.0
+	spin@0.9.8
+	sqlite-wasm-rs@0.5.5
+	stable_deref_trait@1.2.1
+	static_assertions@1.1.0
+	string_cache@0.9.0
+	string_cache_codegen@0.6.1
+	strsim@0.11.1
+	strum@0.27.2
+	strum@0.28.0
+	strum_macros@0.27.2
+	strum_macros@0.28.0
+	subtle@2.6.1
+	supports-color@2.1.0
+	supports-color@3.0.2
+	swift-rs@1.0.7
+	symlink@0.1.0
+	syn@1.0.109
+	syn@2.0.118
+	sync_wrapper@1.0.2
+	synstructure@0.13.2
+	syntect@5.3.0
+	sys-locale@0.3.2
+	sysinfo@0.37.2
+	system-deps@6.2.2
+	tao-macros@0.1.3
+	tao@0.35.3
+	tap@1.0.1
+	tar@0.4.46
+	target-lexicon@0.12.16
+	target-triple@1.0.0
+	tauri-build@2.6.3
+	tauri-codegen@2.6.3
+	tauri-macros@2.6.3
+	tauri-plugin-clipboard-manager@2.3.2
+	tauri-plugin-deep-link@2.4.9
+	tauri-plugin-dialog@2.7.1
+	tauri-plugin-fs@2.5.1
+	tauri-plugin-log@2.8.0
+	tauri-plugin-os@2.3.2
+	tauri-plugin-process@2.3.1
+	tauri-plugin-shell@2.3.5
+	tauri-plugin-single-instance@2.4.2
+	tauri-plugin-store@2.4.3
+	tauri-plugin-updater@2.10.1
+	tauri-plugin-window-state@2.4.1
+	tauri-plugin@2.6.3
+	tauri-runtime-wry@2.11.4
+	tauri-runtime@2.11.3
+	tauri-utils@2.9.3
+	tauri-winres@0.3.6
+	tauri-winrt-notification@0.7.2
+	tauri@2.11.4
+	temp-env@0.3.6
+	tempfile@3.27.0
+	tendril@0.5.0
+	termcolor@1.4.1
+	termina@0.3.3
+	terminal-colorsaurus@1.0.3
+	terminal-trx@0.2.6
+	terminal_size@0.4.4
+	terminfo@0.9.0
+	termion@4.0.6
+	termios@0.3.3
+	termtree@0.5.1
+	termwiz@0.23.3
+	textwrap@0.16.2
+	thiserror-impl@1.0.69
+	thiserror-impl@2.0.18
+	thiserror@1.0.69
+	thiserror@2.0.18
+	thread_local@1.1.9
+	tiff@0.11.3
+	time-core@0.1.9
+	time-macros@0.2.30
+	time@0.3.51
+	tiny-keccak@2.0.2
+	tinystr@0.8.3
+	tinyvec@1.11.0
+	tinyvec_macros@0.1.1
+	tokio-macros@2.7.0
+	tokio-rustls@0.26.4
+	tokio-stream@0.1.18
+	tokio-tungstenite@0.29.0
+	tokio-util@0.7.18
+	tokio@1.52.3
+	toml@0.8.2
+	toml@0.9.12+spec-1.1.0
+	toml@1.1.2+spec-1.1.0
+	toml_datetime@0.6.3
+	toml_datetime@0.7.5+spec-1.1.0
+	toml_datetime@1.1.1+spec-1.1.0
+	toml_edit@0.19.15
+	toml_edit@0.20.2
+	toml_edit@0.25.12+spec-1.1.0
+	toml_parser@1.1.2+spec-1.1.0
+	toml_writer@1.1.1+spec-1.1.0
+	tonic-prost@0.14.6
+	tonic@0.14.6
+	tower-http@0.6.11
+	tower-layer@0.3.3
+	tower-service@0.3.3
+	tower@0.5.3
+	tracing-appender@0.2.5
+	tracing-attributes@0.1.31
+	tracing-core@0.1.36
+	tracing-forest@0.3.1
+	tracing-log@0.2.0
+	tracing-subscriber@0.3.23
+	tracing@0.1.44
+	tray-icon@0.24.1
+	tree_magic_mini@3.2.2
+	try-lock@0.2.5
+	trybuild@1.0.117
+	tungstenite@0.29.0
+	two-face@0.5.2+bat-0.26.1
+	typeid@1.0.3
+	typenum@1.20.1
+	ucd-trie@0.1.7
+	uds_windows@1.2.1
+	uluru@3.1.0
+	unic-char-property@0.9.0
+	unic-char-range@0.9.0
+	unic-common@0.9.0
+	unic-ucd-ident@0.9.0
+	unic-ucd-version@0.9.0
+	unicase@2.9.0
+	unicode-bom@2.0.3
+	unicode-ident@1.0.24
+	unicode-linebreak@0.1.5
+	unicode-normalization@0.1.25
+	unicode-segmentation@1.13.3
+	unicode-truncate@2.0.1
+	unicode-width@0.2.2
+	untrusted@0.9.0
+	url@2.5.8
+	urlencoding@2.1.3
+	urlpattern@0.3.0
+	utf-8@0.7.6
+	utf8-width@0.1.8
+	utf8_iter@1.0.4
+	utf8parse@0.2.2
+	uuid@1.23.4
+	valuable@0.1.1
+	value-bag@1.12.0
+	vcpkg@0.2.15
+	version-compare@0.2.1
+	version_check@0.9.5
+	vswhom-sys@0.1.3
+	vswhom@0.1.0
+	vtparse@0.6.2
+	walkdir@2.5.0
+	want@0.3.1
+	wasi@0.11.1+wasi-snapshot-preview1
+	wasip2@1.0.4+wasi-0.2.12
+	wasm-bindgen-futures@0.4.76
+	wasm-bindgen-macro-support@0.2.126
+	wasm-bindgen-macro@0.2.126
+	wasm-bindgen-shared@0.2.126
+	wasm-bindgen@0.2.126
+	wasm-streams@0.5.0
+	wayland-backend@0.3.15
+	wayland-client@0.31.14
+	wayland-protocols-wlr@0.3.12
+	wayland-protocols@0.32.13
+	wayland-scanner@0.31.10
+	wayland-sys@0.31.11
+	web-sys@0.3.103
+	web-time@1.1.0
+	web_atoms@0.2.5
+	webkit2gtk-sys@2.0.2
+	webkit2gtk@2.0.2
+	webpki-root-certs@1.0.8
+	webview2-com-macros@0.8.1
+	webview2-com-sys@0.38.2
+	webview2-com@0.38.2
+	weezl@0.1.12
+	wezterm-bidi@0.2.3
+	wezterm-blob-leases@0.1.1
+	wezterm-color-types@0.3.0
+	wezterm-dynamic-derive@0.1.1
+	wezterm-dynamic@0.2.1
+	wezterm-input-types@0.1.0
+	which@8.0.4
+	winapi-i686-pc-windows-gnu@0.4.0
+	winapi-util@0.1.11
+	winapi-x86_64-pc-windows-gnu@0.4.0
+	winapi@0.3.9
+	window-vibrancy@0.6.0
+	windows-collections@0.2.0
+	windows-collections@0.3.2
+	windows-core@0.61.2
+	windows-core@0.62.2
+	windows-future@0.2.1
+	windows-future@0.3.2
+	windows-implement@0.60.2
+	windows-interface@0.59.3
+	windows-link@0.1.3
+	windows-link@0.2.1
+	windows-numerics@0.2.0
+	windows-numerics@0.3.1
+	windows-registry@0.5.3
+	windows-registry@0.6.1
+	windows-result@0.3.4
+	windows-result@0.4.1
+	windows-strings@0.4.2
+	windows-strings@0.5.1
+	windows-sys@0.45.0
+	windows-sys@0.52.0
+	windows-sys@0.59.0
+	windows-sys@0.60.2
+	windows-sys@0.61.2
+	windows-targets@0.42.2
+	windows-targets@0.52.6
+	windows-targets@0.53.5
+	windows-threading@0.1.0
+	windows-threading@0.2.1
+	windows-version@0.1.7
+	windows@0.61.3
+	windows@0.62.2
+	windows_aarch64_gnullvm@0.42.2
+	windows_aarch64_gnullvm@0.52.6
+	windows_aarch64_gnullvm@0.53.1
+	windows_aarch64_msvc@0.42.2
+	windows_aarch64_msvc@0.52.6
+	windows_aarch64_msvc@0.53.1
+	windows_i686_gnu@0.42.2
+	windows_i686_gnu@0.52.6
+	windows_i686_gnu@0.53.1
+	windows_i686_gnullvm@0.52.6
+	windows_i686_gnullvm@0.53.1
+	windows_i686_msvc@0.42.2
+	windows_i686_msvc@0.52.6
+	windows_i686_msvc@0.53.1
+	windows_x86_64_gnu@0.42.2
+	windows_x86_64_gnu@0.52.6
+	windows_x86_64_gnu@0.53.1
+	windows_x86_64_gnullvm@0.42.2
+	windows_x86_64_gnullvm@0.52.6
+	windows_x86_64_gnullvm@0.53.1
+	windows_x86_64_msvc@0.42.2
+	windows_x86_64_msvc@0.52.6
+	windows_x86_64_msvc@0.53.1
+	winnow@0.5.40
+	winnow@0.7.15
+	winnow@1.0.3
+	winreg@0.55.0
+	wit-bindgen@0.57.1
+	wl-clipboard-rs@0.9.3
+	writeable@0.6.3
+	wry@0.55.1
+	wyz@0.5.1
+	x11-dl@2.21.0
+	x11@2.21.0
+	x11rb-protocol@0.13.2
+	x11rb@0.13.2
+	xattr@1.6.1
+	xdg-home@1.3.0
+	xterm-color@1.0.2
+	yansi@1.0.1
+	yoke-derive@0.8.2
+	yoke@0.8.3
+	zbus@4.4.0
+	zbus@5.16.0
+	zbus_macros@4.4.0
+	zbus_macros@5.16.0
+	zbus_names@3.0.0
+	zbus_names@4.3.2
+	zerocopy-derive@0.8.52
+	zerocopy@0.8.52
+	zerofrom-derive@0.1.7
+	zerofrom@0.1.8
+	zeroize@1.9.0
+	zeroize_derive@1.5.0
+	zerotrie@0.2.4
+	zerovec-derive@0.11.3
+	zerovec@0.11.6
+	zip@4.6.1
+	zlib-rs@0.6.4
+	zmij@1.0.21
+	zune-core@0.5.1
+	zune-jpeg@0.5.15
+	zvariant@4.2.0
+	zvariant@5.12.0
+	zvariant_derive@4.2.0
+	zvariant_derive@5.12.0
+	zvariant_utils@2.1.0
+	zvariant_utils@3.4.0
+"
+
+declare -A GIT_CRATES=(
+	[file-id]='https://github.com/notify-rs/notify;978fe719b066a8ce76b9a9d346546b1569eecfb6;notify-%commit%/file-id'
+	[git-meta-lib]='https://github.com/git-meta/git-meta;d5ad47dcd2935f0ca1836cef0cbab03ca1431190;git-meta-%commit%/crates/git-meta-lib'
+	[git2]='https://github.com/gitbutlerapp/git2-rs;a87a7bb3f6843504339fe7434ee0732a3e968f3e;git2-rs-%commit%'
+	[gix-actor]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-actor'
+	[gix-attributes]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-attributes'
+	[gix-bitmap]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-bitmap'
+	[gix-chunk]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-chunk'
+	[gix-command]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-command'
+	[gix-commitgraph]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-commitgraph'
+	[gix-config-value]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-config-value'
+	[gix-config]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-config'
+	[gix-credentials]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-credentials'
+	[gix-date]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-date'
+	[gix-diff]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-diff'
+	[gix-dir]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-dir'
+	[gix-discover]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-discover'
+	[gix-error]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-error'
+	[gix-features]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-features'
+	[gix-filter]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-filter'
+	[gix-fs]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-fs'
+	[gix-glob]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-glob'
+	[gix-hash]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-hash'
+	[gix-hashtable]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-hashtable'
+	[gix-ignore]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-ignore'
+	[gix-imara-diff]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-imara-diff'
+	[gix-index]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-index'
+	[gix-lock]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-lock'
+	[gix-macros]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-macros'
+	[gix-mailmap]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-mailmap'
+	[gix-merge]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-merge'
+	[gix-negotiate]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-negotiate'
+	[gix-note]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-note'
+	[gix-object]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-object'
+	[gix-odb]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-odb'
+	[gix-pack]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-pack'
+	[gix-packetline]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-packetline'
+	[gix-path]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-path'
+	[gix-pathspec]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-pathspec'
+	[gix-prompt]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-prompt'
+	[gix-protocol]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-protocol'
+	[gix-quote]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-quote'
+	[gix-ref]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-ref'
+	[gix-refspec]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-refspec'
+	[gix-revision]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-revision'
+	[gix-revwalk]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-revwalk'
+	[gix-sec]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-sec'
+	[gix-shallow]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-shallow'
+	[gix-status]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-status'
+	[gix-submodule]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-submodule'
+	[gix-tempfile]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-tempfile'
+	[gix-testtools]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/tests/tools'
+	[gix-trace]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-trace'
+	[gix-transport]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-transport'
+	[gix-traverse]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-traverse'
+	[gix-url]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-url'
+	[gix-utils]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-utils'
+	[gix-validate]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-validate'
+	[gix-worktree-state]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-worktree-state'
+	[gix-worktree-stream]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-worktree-stream'
+	[gix-worktree]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-worktree'
+	[gix-zlib]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix-zlib'
+	[gix]='https://github.com/GitoxideLabs/gitoxide;dda600d7ee29a6bda4cf1047d0d1782e76b16f98;gitoxide-%commit%/gix'
+	[libgit2-sys]='https://github.com/gitbutlerapp/git2-rs;a87a7bb3f6843504339fe7434ee0732a3e968f3e;git2-rs-%commit%/libgit2-sys'
+	[minus]='https://github.com/arijit79/minus;57f1848f831d153a10d65060562ce1fdde938a01;minus-%commit%'
+	[tauri-plugin-trafficlights-positioner]='https://github.com/gitbutlerapp/tauri-plugin-trafficlights-positioner;57a6c6a2c58b99db32bbc710d37dc293245408dd;tauri-plugin-trafficlights-positioner-%commit%'
+)
+
+# libgit2-sys builds the bundled libgit2 (see src_configure); upstream ships
+# it as a git submodule, which GitHub tarballs leave empty.
+GIT2_RS_COMMIT="a87a7bb3f6843504339fe7434ee0732a3e968f3e"
+LIBGIT2_COMMIT="f7164261c9bc0a7e0ebf767c584e5192810a8b24"
+# Matches "packageManager" in package.json.
+PNPM_PV="10.20.0"
+RUST_MIN_VER="1.96.0"
+
+inherit cargo desktop optfeature xdg
+
+DESCRIPTION="Git client for simultaneous branches on top of your existing workflow"
+HOMEPAGE="
+	https://gitbutler.com/
+	https://github.com/gitbutlerapp/gitbutler
+"
+SRC_URI="
+	https://github.com/gitbutlerapp/gitbutler/archive/refs/tags/release/${PV}.tar.gz
+		-> ${P}.tar.gz
+	https://github.com/libgit2/libgit2/archive/${LIBGIT2_COMMIT}.tar.gz
+		-> libgit2-${LIBGIT2_COMMIT}.gh.tar.gz
+	https://registry.npmjs.org/pnpm/-/pnpm-${PNPM_PV}.tgz
+	${CARGO_CRATE_URIS}
+"
+S="${WORKDIR}/${PN}-release-${PV}"
+
+LICENSE="FSL-1.1-MIT"
+# Dependent crate licenses
+LICENSE+="
+	0BSD Apache-2.0 Apache-2.0-with-LLVM-exceptions BSD Boost-1.0
+	CC0-1.0 CDLA-Permissive-2.0 ISC MIT MPL-2.0 Unicode-3.0
+	Unicode-DFS-2016 WTFPL-2 ZLIB BZIP2
+"
+# Bundled libgit2
+LICENSE+=" GPL-2-with-linking-exception"
+SLOT="0"
+KEYWORDS="~amd64"
+
+# The frontend is installed with pnpm, which fetches its dependencies at build
+# time; there is no eclass for pnpm lockfiles. Crates come from CRATES above.
+# Tests need git fixtures and network access.
+RESTRICT="network-sandbox test"
+
+# libayatana-appindicator is loaded at runtime, see pkg_postinst.
+DEPEND="
+	dev-db/sqlite:3
+	dev-libs/glib:2
+	dev-libs/openssl:=
+	net-libs/libsoup:3.0
+	net-libs/webkit-gtk:4.1
+	net-misc/curl
+	sys-apps/dbus
+	virtual/zlib:=
+	x11-libs/cairo
+	x11-libs/gdk-pixbuf:2
+	x11-libs/gtk+:3
+	x11-libs/pango
+"
+RDEPEND="
+	${DEPEND}
+	dev-vcs/git
+"
+BDEPEND="
+	>=net-libs/nodejs-24
+	dev-build/cmake
+	virtual/pkgconfig
+"
+
+QA_FLAGS_IGNORED="usr/bin/gitbutler-.*"
+
+src_unpack() {
+	cargo_src_unpack
+
+	local libgit2="${WORKDIR}/git2-rs-${GIT2_RS_COMMIT}/libgit2-sys/libgit2"
+	rmdir "${libgit2}" || die
+	mv "${WORKDIR}/libgit2-${LIBGIT2_COMMIT}" "${libgit2}" || die
+
+	mv "${WORKDIR}/package" "${WORKDIR}/pnpm" || die
+}
+
+src_prepare() {
+	# node, pnpm and turbo write to the XDG directories.
+	xdg_environment_reset
+	default
+
+	# Gentoo provides the toolchain; do not ask for a rustup channel.
+	rm rust-toolchain.toml || die
+
+	# turbo runs package scripts through "pnpm" from PATH.
+	mkdir -p "${T}/bin" || die
+	cat > "${T}/bin/pnpm" <<-EOF || die
+		#!/bin/sh
+		exec node "${WORKDIR}/pnpm/bin/pnpm.cjs" "\$@"
+	EOF
+	chmod +x "${T}/bin/pnpm" || die
+}
+
+src_configure() {
+	# git2 enables "unstable-sha256", which only links against a libgit2
+	# built with GIT_EXPERIMENTAL_SHA256; dev-libs/libgit2 is not, so the
+	# bundled copy is used.
+	export OPENSSL_NO_VENDOR=1
+	export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
+
+	# cargo.eclass passes RUSTFLAGS as target flags, which drops the
+	# [build] rustflags from .cargo/config.toml.
+	RUSTFLAGS+=" --cfg tokio_unstable"
+
+	cargo_src_configure
+}
+
+src_compile() {
+	local -x PATH="${T}/bin:${PATH}"
+	local -x ELECTRON_SKIP_BINARY_DOWNLOAD=1
+	local -x TURBO_TELEMETRY_DISABLED=1
+	local -x DO_NOT_TRACK=1
+	# Read by the "but" build script; see scripts/release.sh.
+	local -x VERSION="${PV}"
+	local -x CHANNEL="release"
+	local -x GITBUTLER_REQUIRE_MCP_APP=1
+
+	pnpm install --frozen-lockfile --store-dir "${T}/pnpm-store" || die
+	pnpm --filter @gitbutler/but-mcp-app build || die
+	pnpm build:desktop -- --mode production || die
+
+	# tauri-build merges TAURI_CONFIG into tauri.conf.json, like
+	# "tauri build --config" does.
+	local -x TAURI_CONFIG
+	TAURI_CONFIG=$(node -e '
+		const c = require(process.argv[1]);
+		c.version = process.argv[2];
+		delete c.build;
+		delete c.bundle.externalBin;
+		console.log(JSON.stringify(c));
+	' "${S}/crates/gitbutler-tauri/tauri.conf.release.json" "${PV}") || die
+
+	cargo_src_compile -p gitbutler-git --bin gitbutler-git-askpass
+	# Same features as the official Linux build, minus the updater.
+	cargo_src_compile -p gitbutler-tauri \
+		--features builtin-but,packaged-but-distribution,disable-auto-updates
+}
+
+src_install() {
+	# gitbutler-tauri looks for the askpass helper next to itself.
+	dobin "$(cargo_target_dir)"/{gitbutler-tauri,gitbutler-git-askpass}
+	# With builtin-but, the app acts as the "but" CLI when called by that name.
+	dosym gitbutler-tauri /usr/bin/but
+
+	local icons=crates/gitbutler-tauri/icons/release
+	newicon -s 32 ${icons}/32x32.png com.gitbutler.app.png
+	newicon -s 128 ${icons}/128x128.png com.gitbutler.app.png
+	newicon -s 256 ${icons}/128x128@2x.png com.gitbutler.app.png
+
+	# The file name matches the GTK application ID (enableGTKAppId).
+	cat > "${T}/com.gitbutler.app.desktop" <<-EOF || die
+		[Desktop Entry]
+		Type=Application
+		Name=GitButler
+		Comment=${DESCRIPTION}
+		Exec=gitbutler-tauri %U
+		Icon=com.gitbutler.app
+		Terminal=false
+		Categories=Development;RevisionControl;
+		MimeType=x-scheme-handler/but;
+		StartupWMClass=com.gitbutler.app
+	EOF
+	domenu "${T}/com.gitbutler.app.desktop"
+
+	einstalldocs
+}
+
+pkg_postinst() {
+	xdg_pkg_postinst
+
+	optfeature "the tray icon" dev-libs/libayatana-appindicator
+}
