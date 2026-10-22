@@ -1161,7 +1161,10 @@ src_compile() {
 	local -x CHANNEL="release"
 	local -x GITBUTLER_REQUIRE_MCP_APP=1
 
-	pnpm install --frozen-lockfile --store-dir "${T}/pnpm-store" || die
+	# .npmrc sets engine-strict, and apps/web (the website, not built
+	# here) pins node 24.x; the workspace root only needs >=24.
+	pnpm install --frozen-lockfile --config.engine-strict=false \
+		--store-dir "${T}/pnpm-store" || die
 	pnpm --filter @gitbutler/but-mcp-app build || die
 	pnpm build:desktop -- --mode production || die
 
