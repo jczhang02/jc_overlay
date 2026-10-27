@@ -68,6 +68,7 @@ RDEPEND="
 	!symlink? ( sys-libs/ncurses[-minimal] )
 "
 BDEPEND="
+	app-arch/zstd
 	sys-libs/ncurses
 "
 
@@ -88,6 +89,41 @@ pkg_setup() {
 	done
 
 	zig_pkg_setup
+}
+
+src_unpack() {
+	# With Zig 0.17.0, "zig fetch" only stores the compressed package in
+	# the global cache, so zig_src_unpack leaves ZIG_LOCAL_PKG_DIR empty
+	# and "--system" finds nothing. Unpack the packages there directly,
+	# stripping a single top-level directory like Zig does. "--system"
+	# mode does not check package hashes; Manifest checks the distfiles.
+	local dist dir tmp entries old_shopt
+	for dist in ${A}; do
+		if [[ ! -v "ZBS_DEPENDENCIES[${dist}]" ]]; then
+			unpack "${dist}"
+			continue
+		fi
+
+		dir="${ZIG_LOCAL_PKG_DIR}/${dist%.tar.*}"
+		tmp="${T}/zig-unpack"
+		mkdir -p "${ZIG_LOCAL_PKG_DIR}" "${tmp}" || die
+		tar -xf "${DISTDIR}/${dist}" -C "${tmp}" || die "Failed to unpack ${dist}"
+
+		old_shopt=$(shopt -p dotglob nullglob)
+		shopt -s dotglob nullglob
+		entries=( "${tmp}"/* )
+		eval "${old_shopt}"
+
+		if [[ ${#entries[@]} -eq 1 && -d ${entries[0]} ]]; then
+			mv "${entries[0]}" "${dir}" || die
+			rmdir "${tmp}" || die
+		else
+			mv "${tmp}" "${dir}" || die
+		fi
+	done
+	einfo "ZBS: ${#ZBS_DEPENDENCIES[@]} dependencies unpacked"
+
+	ZBS_ARGS_BASE+=( --build-file "${S}/build.zig" )
 }
 
 src_configure() {
