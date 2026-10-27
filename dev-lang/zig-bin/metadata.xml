@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription>
+		Prebuilt Zig toolchain. Carried in this overlay until ::gentoo ships
+		0.17.0, which x11-terms/ghostty 1.4.0 requires.
+	</longdescription>
+	<upstream>
+		<remote-id type="codeberg">ziglang/zig</remote-id>
+		<bugs-to>https://codeberg.org/ziglang/zig/issues</bugs-to>
+	</upstream>
+</pkgmetadata>
