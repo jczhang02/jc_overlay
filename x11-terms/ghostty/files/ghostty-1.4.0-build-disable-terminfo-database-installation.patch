@@ -1,0 +1,52 @@
+From 7b5c5034493e26fcc15dc344590f49f15aebc3ed Mon Sep 17 00:00:00 2001
+From: sin-ack <sin-ack@protonmail.com>
+Date: Tue, 27 Oct 2026 11:29:14 -0700
+Subject: [PATCH] build: Disable terminfo database installation
+
+Database installation is unconditional in Ghostty and causes conflicts
+with newer ncurses versions which have the database merged in.
+
+Bug: https://bugs.gentoo.org/948830
+---
+ src/build/GhosttyResources.zig | 21 ---------------------
+ 1 file changed, 21 deletions(-)
+
+diff --git a/src/build/GhosttyResources.zig b/src/build/GhosttyResources.zig
+index e90cba9..aa9dd34 100644
+--- a/src/build/GhosttyResources.zig
++++ b/src/build/GhosttyResources.zig
+@@ -30,10 +30,6 @@ pub fn init(b: *std.Build, cfg: *const Config, deps: *const SharedDeps) !Ghostty
+     // Terminfo
+     terminfo: {
+         const os_tag = cfg.target.result.os.tag;
+-        const terminfo_share_dir = if (os_tag == .freebsd)
+-            "site-terminfo"
+-        else
+-            "terminfo";
+ 
+         // Encode our terminfo
+         const run = b.addRunArtifact(build_data_exe);
+@@ -76,23 +72,6 @@ pub fn init(b: *std.Build, cfg: *const Config, deps: *const SharedDeps) !Ghostty
+ 
+             try steps.append(b.allocator, &cap_install.step);
+         }
+-
+-        // Compile the terminfo source into a terminfo database
+-        {
+-            const run_step = RunStep.create(b, "tic");
+-            run_step.addArgs(&.{ "tic", "-x", "-o" });
+-            const path = run_step.addOutputFileArg(terminfo_share_dir);
+-
+-            run_step.addFileArg(source);
+-            _ = run_step.captureStdErr(.{}); // so we don't see stderr
+-
+-            const install_step = b.addInstallDirectory(.{
+-                .source_dir = path,
+-                .install_dir = .{ .custom = "share" },
+-                .install_subdir = terminfo_share_dir,
+-            });
+-            try steps.append(b.allocator, &install_step.step);
+-        }
+     }
+ 
+     // Shell-integration

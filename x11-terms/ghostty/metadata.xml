@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription>
+		Fast, feature-rich, and cross-platform terminal emulator.
+		Carried in this overlay until ::gentoo ships 1.4.0.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">ghostty-org/ghostty</remote-id>
+	</upstream>
+</pkgmetadata>

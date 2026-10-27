@@ -1,0 +1,22 @@
+From eae22ee4b85fd651d1dfcaa2729e90b930bea68e Mon Sep 17 00:00:00 2001
+From: sin-ack <sin-ack@protonmail.com>
+Date: Tue, 27 Oct 2026 11:29:12 -0700
+Subject: [PATCH] build: Fix bzip2 system dependency name
+
+---
+ src/build/SharedDeps.zig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/build/SharedDeps.zig b/src/build/SharedDeps.zig
+index 8f4e239..f19cb14 100644
+--- a/src/build/SharedDeps.zig
++++ b/src/build/SharedDeps.zig
+@@ -242,7 +242,7 @@ pub fn add(
+         );
+ 
+         if (b.systemIntegrationOption("freetype", .{})) {
+-            step.root_module.linkSystemLibrary("bzip2", dynamic_link_opts);
++            step.root_module.linkSystemLibrary("bz2", dynamic_link_opts);
+             step.root_module.linkSystemLibrary("freetype2", dynamic_link_opts);
+         } else {
+             step.root_module.linkLibrary(freetype_dep.artifact("freetype"));
