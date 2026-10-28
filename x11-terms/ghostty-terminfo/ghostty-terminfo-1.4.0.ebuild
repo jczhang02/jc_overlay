@@ -48,7 +48,7 @@ declare -g -r -A ZBS_DEPENDENCIES=(
 )
 
 ZIG_SLOT="0.17"
-inherit zig
+inherit toolchain-funcs zig
 
 SRC_URI="
 	https://release.files.ghostty.org/${PV}/ghostty-${PV}.tar.gz
@@ -89,6 +89,15 @@ pkg_setup() {
 	done
 
 	zig_pkg_setup
+
+	# zig.eclass writes a Zig 0.16 style libc file. Zig 0.17.0 needs
+	# cc_dir on Linux (gcc_dir is its old alias) and darwin_sdk_dir.
+	if [[ ${MERGE_TYPE} != binary ]]; then
+		local cc_dir
+		cc_dir=$(dirname "$($(tc-getCC) -print-file-name=crtbegin.o)") || die
+		sed -i -e "s|^gcc_dir=.*|gcc_dir=${cc_dir}|" "${T}/zig_libc.txt" || die
+		echo "darwin_sdk_dir=" >> "${T}/zig_libc.txt" || die
+	fi
 }
 
 src_unpack() {
