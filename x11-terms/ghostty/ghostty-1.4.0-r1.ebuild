@@ -111,6 +111,9 @@ REQUIRED_USE="
 PATCHES=(
 	"${FILESDIR}"/${PN}-1.4.0-bzip2-dependency.patch
 	"${FILESDIR}"/${PN}-1.4.0-build-disable-terminfo-database-installation.patch
+	# Fractional scaling from upstream PR #14269 makes text blurry on GNOME
+	# at 125% when the window is not maximized. Go back to 1.3.1 behavior.
+	"${FILESDIR}"/${PN}-1.4.0-gtk-integer-scale-factor.patch
 )
 
 pkg_setup() {

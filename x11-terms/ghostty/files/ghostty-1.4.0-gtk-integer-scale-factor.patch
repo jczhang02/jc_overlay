@@ -1,0 +1,30 @@
+From 67128e880b8d50046c3215e38e3fa051e83f4288 Mon Sep 17 00:00:00 2001
+From: JC Zhang <chengrui0727@gmail.com>
+Date: Tue, 27 Oct 2026 20:16:32 -0700
+Subject: [PATCH] fix(gtk): render at the integer scale factor
+
+1.4.0 renders at the fractional GdkSurface scale. On GNOME at 125%,
+text in windows that are not maximized is blurry. Use the integer
+scale factor again, like 1.3.1, and let GTK scale the texture down.
+---
+ src/apprt/gtk/scale.zig | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/src/apprt/gtk/scale.zig b/src/apprt/gtk/scale.zig
+index 915061b..320dd1b 100644
+--- a/src/apprt/gtk/scale.zig
++++ b/src/apprt/gtk/scale.zig
+@@ -29,13 +29,6 @@ pub const Layout = struct {
+ };
+ 
+ pub fn widgetSurfaceScale(widget: *gtk.Widget) f64 {
+-    if (widget.getNative()) |native| {
+-        if (native.getSurface()) |surface| {
+-            const scale = surface.getScale();
+-            if (scale > 0) return scale;
+-        }
+-    }
+-
+     const scale = widget.getScaleFactor();
+     if (scale <= 0) return 1.0;
+     return @floatFromInt(scale);
