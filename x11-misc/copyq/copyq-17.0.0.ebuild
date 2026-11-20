@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit cmake optfeature virtualx xdg
+inherit cmake eapi9-ver optfeature virtualx xdg
 
 DESCRIPTION="Clipboard manager with advanced features"
 HOMEPAGE="https://hluk.github.io/CopyQ/ https://github.com/hluk/CopyQ/"
@@ -56,7 +56,6 @@ PATCHES=(
 	# used in tests
 	"${FILESDIR}/${P}-support-plugin-dir-envvar.patch"
 	"${FILESDIR}/${P}-fix-gnome-clipboard-timer.patch"
-	"${FILESDIR}/${P}-gnome-50.patch"
 )
 
 src_configure() {
@@ -110,5 +109,12 @@ src_test() {
 
 pkg_postinst() {
 	xdg_pkg_postinst
+
+	if ver_replacing -lt 17; then
+		ewarn "CopyQ 17 moves tab data and state files to XDG directories"
+		ewarn "on first start. Older versions will not find them, so do not"
+		ewarn "downgrade below 17 after running this version."
+	fi
+
 	optfeature "encryption support in commands" app-crypt/gnupg
 }
