@@ -16,7 +16,7 @@ KEYWORDS="~amd64 ~arm64"
 # No vendor tarball upstream; allow go module fetch during build.
 RESTRICT="network-sandbox mirror test strip"
 
-BDEPEND=">=dev-lang/go-1.25"
+BDEPEND=">=dev-lang/go-1.26"
 
 RDEPEND="app-misc/tmux"
 
