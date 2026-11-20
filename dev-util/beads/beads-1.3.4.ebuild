@@ -3,6 +3,8 @@
 
 EAPI=8
 
+inherit eapi9-ver
+
 DESCRIPTION="Distributed graph issue tracker for AI agents, powered by Dolt"
 HOMEPAGE="https://github.com/gastownhall/beads"
 SRC_URI="https://github.com/gastownhall/beads/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
@@ -45,4 +47,12 @@ src_install() {
 pkg_postinst() {
 	elog "beads (bd) installed. Both 'bd' and 'beads' invoke the binary."
 	elog "Run 'bd init' inside a git repo to create a .beads database."
+
+	if ver_replacing -lt 1.3; then
+		elog
+		elog "Upgrading from bd 1.2.x or earlier: run 'bd recompute-blocked'"
+		elog "once in each existing workspace. Do not run 'bd compact' or"
+		elog "'bd flatten' on a clone that adopted migration 0062 by pull or"
+		elog "bootstrap. See the upgrade notes in the 1.3.3-rc.1 CHANGELOG."
+	fi
 }
