@@ -1,4 +1,4 @@
-Add the Smart fork's only additional module to the shared 1.19.31 vendor tree.
+Add the Smart fork's only additional module to the shared 1.19.34 vendor tree.
 The leaves sources are fetched separately at the commit required by go.mod.
 
 --- a/vendor/modules.txt

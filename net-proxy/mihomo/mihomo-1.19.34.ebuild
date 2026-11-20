@@ -10,9 +10,9 @@ HOMEPAGE="
 	https://github.com/MetaCubeX/mihomo/
 	https://github.com/vernesong/mihomo/
 "
-# Smart uses the 2026-09-18 Alpha snapshot, not the upstream release.
-# It shares 1.19.31's module versions, adding only leaves.
-SMART_COMMIT="8b9aaeeb61b55c56e57d854ff6ac527e0a9c7ef4"
+# Smart uses the 2026-11-11 Alpha merge of the v1.19.34 release.
+# It shares 1.19.34's module versions, adding only leaves.
+SMART_COMMIT="2e6fc107c403ca607714f1613a758e66f12d16e9"
 LEAVES_COMMIT="2a1c022f37d06377727f33761c22bb4d0fdd752e"
 SRC_URI="
 	!smart? ( https://github.com/MetaCubeX/mihomo/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz )
