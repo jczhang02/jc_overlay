@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>chengrui0727@gmail.com</email>
+		<name>JC Zhang</name>
+	</maintainer>
+	<longdescription lang="en">
+		AyuGram is a Telegram Desktop fork with Ghost mode, message history,
+		filters and extra customization. Built from source; the ebuild is
+		based on ::gentoo net-im/telegram-desktop.
+	</longdescription>
+	<use>
+		<flag name="enchant">Use the <pkg>app-text/enchant</pkg> spell-checking backend instead of <pkg>app-text/hunspell</pkg></flag>
+		<flag name="fonts">Use builtin patched copy of open-sans fonts (overrides fontconfig)</flag>
+		<flag name="pango">Render text through <pkg>x11-libs/pango</pkg> instead of the private Qt API (Recommended)</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">AyuGram/AyuGramDesktop</remote-id>
+		<bugs-to>https://github.com/AyuGram/AyuGramDesktop/issues</bugs-to>
+		<changelog>https://github.com/AyuGram/AyuGramDesktop/releases</changelog>
+	</upstream>
+</pkgmetadata>
